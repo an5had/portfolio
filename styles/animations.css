@@ -1,0 +1,101 @@
+/* ========================================
+   SMOOTH ANIMATIONS STYLESHEET
+   ======================================== */
+
+/* Base animation properties */
+.smooth-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Animation states */
+.smooth-animate.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Animation variants */
+.smooth-animate.slide-up {
+    transform: translateY(50px);
+}
+
+.smooth-animate.slide-up.fade-in {
+    transform: translateY(0);
+}
+
+.smooth-animate.scale-in {
+    transform: translateY(30px) scale(0.95);
+}
+
+.smooth-animate.scale-in.fade-in {
+    transform: translateY(0) scale(1);
+}
+
+.smooth-animate.slide-left {
+    transform: translateX(50px);
+}
+
+.smooth-animate.slide-left.fade-in {
+    transform: translateX(0);
+}
+
+.smooth-animate.slide-right {
+    transform: translateX(-50px);
+}
+
+.smooth-animate.slide-right.fade-in {
+    transform: translateX(0);
+}
+
+/* Staggered animation delays */
+.smooth-animate.delay-1 { transition-delay: 0.1s; }
+.smooth-animate.delay-2 { transition-delay: 0.2s; }
+.smooth-animate.delay-3 { transition-delay: 0.3s; }
+.smooth-animate.delay-4 { transition-delay: 0.4s; }
+.smooth-animate.delay-5 { transition-delay: 0.5s; }
+.smooth-animate.delay-6 { transition-delay: 0.6s; }
+
+/* Hover effects */
+.smooth-hover {
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.smooth-hover:hover {
+    transform: translateY(-5px);
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Accessibility: Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .smooth-animate {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+    
+    .smooth-hover {
+        transition: none;
+    }
+    
+    .smooth-hover:hover {
+        transform: none;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Performance optimizations */
+.smooth-animate {
+    will-change: transform, opacity;
+}
+
+.smooth-animate.fade-in {
+    will-change: auto;
+}
