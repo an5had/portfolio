@@ -19,3 +19,8 @@ Thumbs.db
 node_modules/
 
 # Keep all your portfolio files - they should be committed
+
+# build output
+app/dist/
+dist-react/
+*.local

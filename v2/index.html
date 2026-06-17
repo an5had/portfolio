@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Anshad — Senior UX &amp; Product Designer</title>
+  <meta name="description" content="Anshad (an5had) — Senior UX & Product Designer with 5+ years shaping enterprise platforms, data-heavy dashboards and AI-powered products. Currently at Exult Global." />
+  <meta property="og:title" content="Anshad — Senior UX & Product Designer" />
+  <meta property="og:description" content="I bring messy problems into focus — and design products people actually understand." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- custom cursor -->
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
+  <!-- loader -->
+  <div class="loader" id="loader">
+    <div class="loader-mark"><span>a</span><i>5</i></div>
+    <div class="loader-bar"><span></span></div>
+  </div>
+
+  <!-- nav -->
+  <header class="nav" id="nav">
+    <a class="brand" href="#top" data-cursor="link">
+      <span class="brand-badge">a<i>5</i></span>
+      <span class="brand-word">an5had</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#work" data-cursor="link">Work</a>
+      <a href="#capabilities" data-cursor="link">Capabilities</a>
+      <a href="#lens" data-cursor="link">Lens</a>
+      <a href="#about" data-cursor="link">About</a>
+    </nav>
+    <a href="#contact" class="nav-cta" data-cursor="link"><span>Let’s talk</span></a>
+  </header>
+
+  <main id="top">
+
+    <!-- ======================= HERO ======================= -->
+    <section class="hero" id="hero">
+      <canvas class="hero-canvas" id="hero-canvas"></canvas>
+      <div class="hero-grain" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <p class="hero-kicker reveal-up">Senior UX &amp; Product Designer</p>
+        <h1 class="hero-title">
+          <span class="line"><span class="w">I</span> <span class="w">bring</span> <span class="w">messy</span></span>
+          <span class="line"><span class="w">problems</span> <span class="w accent">into</span> <span class="w accent">focus.</span></span>
+        </h1>
+        <p class="hero-sub reveal-up">
+          5+ years turning complex enterprise, data &amp; AI products into experiences
+          people actually understand — currently at <strong>Exult Global</strong>.
+        </p>
+        <div class="hero-foot reveal-up">
+          <span class="sign">by Anshad</span>
+          <a class="scroll-cue" href="#work" data-cursor="link"><span>Scroll</span><i></i></a>
+        </div>
+      </div>
+
+      <div class="hero-side reveal-up">
+        <span>📍 India · Remote</span>
+        <span class="dot-live">Open to select work</span>
+      </div>
+    </section>
+
+    <!-- ======================= MARQUEE ======================= -->
+    <section class="marquee" aria-hidden="true">
+      <div class="marquee-track" id="marquee">
+        <span>Enterprise Platforms</span><i>✦</i>
+        <span>Data &amp; Dashboards</span><i>✦</i>
+        <span>AI-Powered Products</span><i>✦</i>
+        <span>Design Systems</span><i>✦</i>
+        <span>UX Research</span><i>✦</i>
+        <span>Product Strategy</span><i>✦</i>
+        <span>Enterprise Platforms</span><i>✦</i>
+        <span>Data &amp; Dashboards</span><i>✦</i>
+        <span>AI-Powered Products</span><i>✦</i>
+        <span>Design Systems</span><i>✦</i>
+        <span>UX Research</span><i>✦</i>
+        <span>Product Strategy</span><i>✦</i>
+      </div>
+    </section>
+
+    <!-- ======================= INTRO STATEMENT ======================= -->
+    <section class="intro container" id="intro">
+      <p class="eyebrow reveal-up">What I actually do</p>
+      <h2 class="intro-lead reveal-lines">
+        I design digital products that feel obvious — and bring the messy part
+        <span class="u">into focus</span>.
+      </h2>
+      <p class="intro-body reveal-up">
+        Senior UX Designer at Exult Global, working across enterprise systems,
+        analytics, fintech and consumer products for clients including Wheels Up,
+        HIG Capital, Dexcom and CyberProof. I turn ambiguous, under-defined problems
+        into shipped, measurable products — from the first user interview to the last
+        pixel in code.
+      </p>
+    </section>
+
+    <!-- ======================= SELECTED WORK ======================= -->
+    <section class="work" id="work">
+      <div class="container work-head">
+        <p class="eyebrow reveal-up">Selected work</p>
+        <h2 class="section-title reveal-up">Case studies</h2>
+      </div>
+
+      <!-- CASE 01 — Wheels Up (flagship) -->
+      <article class="case" id="case-wheelsup">
+        <div class="case-media" data-parallax>
+          <div class="case-visual v-wheelsup">
+            <span class="case-no">01</span>
+            <div class="mock mock-dash">
+              <div class="mock-bar"></div>
+              <div class="mock-grid"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+          </div>
+        </div>
+        <div class="case-body">
+          <p class="case-client reveal-up">Wheels Up · USA · Aviation Tech</p>
+          <h3 class="case-title reveal-up">Consolidating 50+ analytics dashboards into one system</h3>
+          <p class="case-summary reveal-up">
+            Partnered directly with the VP of Business Intelligence &amp; Data Analytics to
+            redesign internal reporting across operations, sales and finance. I audited a
+            sprawl of inconsistent dashboards, built a scalable Figma design system, and
+            standardised how data is read across the company.
+          </p>
+          <ul class="case-meta reveal-up">
+            <li><span>Role</span>Senior UX Designer · Design systems · Data viz</li>
+            <li><span>Scope</span>Research, IA, component library, 50+ dashboards</li>
+            <li><span>Year</span>2024 — Present</li>
+          </ul>
+          <div class="case-stats reveal-up">
+            <div class="stat"><b data-count="50" data-suffix="+">0</b><span>dashboards consolidated</span></div>
+            <div class="stat"><b data-count="25" data-suffix="%">0</b><span>faster report generation</span></div>
+            <div class="stat"><b data-count="1" data-prefix="" data-suffix="">0</b><span>scalable design system</span></div>
+          </div>
+          <div class="case-tags reveal-up">
+            <span>Enterprise</span><span>Data Visualisation</span><span>Design Systems</span><span>B2B</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CASE 02 — Jobin Arabia -->
+      <article class="case" id="case-jobin">
+        <div class="case-media" data-parallax>
+          <div class="case-visual v-jobin">
+            <span class="case-no">02</span>
+            <div class="mock mock-app">
+              <div class="mock-head"></div>
+              <div class="mock-rows"><i></i><i></i><i></i><i></i></div>
+            </div>
+          </div>
+        </div>
+        <div class="case-body">
+          <p class="case-client reveal-up">Jobin Arabia · JIC IT Solutions · GCC</p>
+          <h3 class="case-title reveal-up">An HRMS that makes complex HR workflows feel simple</h3>
+          <p class="case-summary reveal-up">
+            End-to-end design of a Human Resource Management System for the GCC market —
+            recruitment, onboarding and employee management. I mapped dense workflows into
+            clear task flows and an information architecture that scales across modules.
+          </p>
+          <ul class="case-meta reveal-up">
+            <li><span>Role</span>UI/UX Designer · Research → prototype → handoff</li>
+            <li><span>Scope</span>Flows, IA, B2B web application</li>
+            <li><span>Year</span>2023 — 2024</li>
+          </ul>
+          <div class="case-tags reveal-up">
+            <span>Enterprise</span><span>HRMS</span><span>Web App</span><span>Workflow</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- CASE 03 — Sea Arabia -->
+      <article class="case" id="case-sea">
+        <div class="case-media" data-parallax>
+          <div class="case-visual v-sea">
+            <span class="case-no">03</span>
+            <div class="mock mock-travel">
+              <div class="mock-hero"></div>
+              <div class="mock-cards"><i></i><i></i><i></i></div>
+            </div>
+          </div>
+        </div>
+        <div class="case-body">
+          <p class="case-client reveal-up">Sea Arabia · JIC IT Solutions · GCC</p>
+          <h3 class="case-title reveal-up">An inland tourism platform built for discovery</h3>
+          <p class="case-summary reveal-up">
+            A consumer-facing platform helping GCC users discover and book inland tourism
+            experiences. Research-led flows and a clean, image-forward interface designed to
+            make exploring feel effortless on mobile.
+          </p>
+          <ul class="case-meta reveal-up">
+            <li><span>Role</span>UI/UX Designer · Research, prototyping</li>
+            <li><span>Scope</span>Consumer platform, mobile-first</li>
+            <li><span>Year</span>2023 — 2024</li>
+          </ul>
+          <div class="case-tags reveal-up">
+            <span>Consumer</span><span>Travel</span><span>Mobile</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- smaller projects grid -->
+      <div class="container more-work">
+        <p class="eyebrow reveal-up">Also shipped</p>
+        <div class="more-grid">
+          <a class="more-card reveal-up" data-cursor="view" href="#contact">
+            <h4>SolarEnvoy</h4>
+            <p>Productivity app ranked <b>#6</b> on the App Store — recognised for clean, intuitive design.</p>
+            <span class="more-tags">Mobile · Fintech · WeCreate</span>
+          </a>
+          <a class="more-card reveal-up" data-cursor="view" href="#contact">
+            <h4>Bansal TMT &amp; Hospital</h4>
+            <p>Discount-management &amp; loyalty mobile apps with matching CMS admin web apps.</p>
+            <span class="more-tags">Mobile · Loyalty · CMS</span>
+          </a>
+          <a class="more-card reveal-up" data-cursor="view" href="#contact">
+            <h4>HIG · Dexcom · CyberProof</h4>
+            <p>Component-based dashboards &amp; decision tools for enterprise &amp; analytics clients.</p>
+            <span class="more-tags">Enterprise · Dashboards · Exult</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= CAPABILITIES ======================= -->
+    <section class="capabilities container" id="capabilities">
+      <p class="eyebrow reveal-up">How I work</p>
+      <h2 class="section-title reveal-up">From fuzzy problem to shipped product.</h2>
+      <div class="cap-grid">
+        <div class="cap reveal-up">
+          <span class="cap-no">01</span>
+          <h3>Enterprise &amp; Data</h3>
+          <p>Component-based dashboards, KPI tools and scalable design systems that make data-heavy platforms genuinely usable.</p>
+        </div>
+        <div class="cap reveal-up">
+          <span class="cap-no">02</span>
+          <h3>Product &amp; Research</h3>
+          <p>User research, journey mapping and systems thinking that align design decisions with real business goals.</p>
+        </div>
+        <div class="cap reveal-up">
+          <span class="cap-no">03</span>
+          <h3>AI &amp; Emerging Tech</h3>
+          <p>Exploring AI-powered experiences and the evolving relationship between technology and human behaviour.</p>
+        </div>
+      </div>
+      <div class="tools reveal-up">
+        <span>Figma</span><span>Framer</span><span>Protopie</span><span>Adobe XD</span>
+        <span>FigJam</span><span>Design Systems</span><span>Prototyping</span><span>Usability Testing</span>
+        <span>Data Viz</span><span>HTML/CSS</span>
+      </div>
+    </section>
+
+    <!-- ======================= LENS / PHOTOGRAPHY ======================= -->
+    <section class="lens" id="lens">
+      <div class="container lens-head">
+        <div>
+          <p class="eyebrow reveal-up">Off the clock</p>
+          <h2 class="section-title reveal-up">Through my lens</h2>
+        </div>
+        <p class="lens-note reveal-up">
+          I’m a street photographer documenting everyday life. The same observational
+          habit — watching people, reading patterns — is exactly how I approach design.
+        </p>
+      </div>
+      <div class="lens-track" id="lens-track">
+        <figure class="frame" data-cursor="view"><span>01</span></figure>
+        <figure class="frame" data-cursor="view"><span>02</span></figure>
+        <figure class="frame" data-cursor="view"><span>03</span></figure>
+        <figure class="frame" data-cursor="view"><span>04</span></figure>
+        <figure class="frame" data-cursor="view"><span>05</span></figure>
+        <figure class="frame" data-cursor="view"><span>06</span></figure>
+      </div>
+    </section>
+
+    <!-- ======================= ABOUT ======================= -->
+    <section class="about container" id="about">
+      <div class="about-portrait reveal-up" data-parallax><span>Anshad</span></div>
+      <div class="about-text">
+        <p class="eyebrow reveal-up">About</p>
+        <h2 class="about-lead reveal-lines">
+          Designer focused on digital products, enterprise platforms and AI-powered
+          experiences that solve complex business &amp; user problems.
+        </h2>
+        <p class="about-body reveal-up">
+          Over the past several years I’ve worked across web, mobile, workflow automation,
+          data-heavy applications and enterprise systems — collaborating with cross-functional
+          teams to transform complex requirements into intuitive experiences.
+        </p>
+        <p class="about-body reveal-up">
+          My interests run beyond traditional UX: AI, emerging tech, product strategy and the
+          creator economy. I believe great products live at the intersection of user needs,
+          business goals and technological opportunity.
+        </p>
+        <ul class="about-facts reveal-up">
+          <li><span>Now</span>Senior UX Designer, Exult Global</li>
+          <li><span>Experience</span>5+ years · 4 companies</li>
+          <li><span>Based</span>India · Working globally</li>
+          <li><span>Education</span>B.Tech, Computer Science</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ======================= CONTACT ======================= -->
+    <section class="contact" id="contact">
+      <div class="container">
+        <p class="eyebrow reveal-up">Let’s talk</p>
+        <h2 class="contact-lead reveal-lines">
+          You’re on <span class="u">itsmyportfolio.com</span> — so you already know whose this is.
+          Let’s build what’s next.
+        </h2>
+        <a class="contact-mail" href="mailto:anuanshadpgm@gmail.com" data-cursor="link" data-magnetic>
+          <span>anuanshadpgm@gmail.com</span>
+        </a>
+        <div class="contact-socials reveal-up">
+          <a href="https://in.linkedin.com/in/an5had" target="_blank" rel="noopener" data-cursor="link">LinkedIn</a>
+          <a href="https://www.instagram.com/an5had/" target="_blank" rel="noopener" data-cursor="link">Instagram</a>
+          <a href="https://x.com/an5had" target="_blank" rel="noopener" data-cursor="link">X / Twitter</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-in">
+      <span>© <span id="year"></span> Muhammed Anshad A</span>
+      <span>itsmyportfolio.com · yes, really</span>
+      <a href="#top" data-cursor="link">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

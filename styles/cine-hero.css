@@ -1,0 +1,248 @@
+/* ===========================================================
+   Cinematic Hero — custom Three.js + GSAP intro
+   Lives OUTSIDE Framer's #main so the runtime never touches it.
+   =========================================================== */
+
+/* Hide the original Framer "Section - Hero" — replaced by the intro */
+.framer-k13w66 { display: none !important; }
+
+/* Scroll distance that drives the packing + dismiss choreography */
+#cine-spacer {
+  height: 340vh;
+  width: 100%;
+  pointer-events: none;
+}
+
+#cine-hero {
+  position: fixed;
+  inset: 0;
+  /* Below the real Framer nav (its wrapper is position:fixed; z-index:10),
+     so the genuine top bar shows over the intro — one nav, not two. */
+  z-index: 9;
+  background: #000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: opacity, transform;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Soft radial glow + cinematic vignette */
+#cine-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 55% at 50% 40%, rgba(70, 90, 140, 0.22), transparent 70%),
+    radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.85) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Bottom-to-top black gradient over the bag — grounds it and makes the
+   scroll cue + domain line readable */
+#cine-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 46vh;
+  background: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.82) 26%, rgba(0, 0, 0, 0.35) 60%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+#cine-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+}
+
+/* Full-frame shutter flash */
+#cine-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: screen;
+}
+
+#cine-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 6vw;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+#cine-kicker {
+  font-family: "Inter", "Hanken Grotesk", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  font-size: clamp(9px, 1.1vw, 13px);
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 1.4rem;
+  padding-left: 0.34em; /* compensate tracking */
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+#cine-hook {
+  font-family: "Inter", "Hanken Grotesk", sans-serif;
+  font-weight: 300;
+  font-size: clamp(32px, 6vw, 86px);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  color: #fff;
+  margin: 0 auto;
+  max-width: 16ch;
+}
+
+#cine-hook span {
+  display: inline-block;
+  clip-path: inset(0 100% 0 0);
+  filter: blur(16px);
+  opacity: 0;
+  will-change: clip-path, filter, opacity;
+}
+
+#cine-sign {
+  font-family: "Inter", "Hanken Grotesk", sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+  margin: 1.4rem 0 0;
+  padding-left: 0.22em;
+  opacity: 0;
+}
+
+#cine-tag {
+  font-family: "Inter", "Hanken Grotesk", sans-serif;
+  font-weight: 300;
+  font-size: clamp(14px, 1.7vw, 21px);
+  color: rgba(255, 255, 255, 0.7);
+  margin: 1.6rem auto 0;
+  max-width: 40ch;
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+/* Scroll cue */
+#cine-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 4vh;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#cine-cue span {
+  font-family: "Inter", "Hanken Grotesk", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  padding-left: 0.32em;
+}
+
+#cine-pun {
+  font-size: 10px !important;
+  letter-spacing: 0.16em !important;
+  text-transform: none !important;
+  color: rgba(255, 255, 255, 0.34) !important;
+  padding-left: 0.16em !important;
+}
+
+#cine-cue i {
+  position: relative;
+  width: 1px;
+  height: 46px;
+  background: rgba(255, 255, 255, 0.18);
+  overflow: hidden;
+}
+
+#cine-cue i::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to bottom, transparent, #fff);
+  animation: cine-cue-run 1.8s cubic-bezier(0.7, 0, 0.3, 1) infinite;
+}
+
+@keyframes cine-cue-run {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(300%); }
+}
+
+/* The real Framer top bar shows over the intro (camera sits below it).
+   No custom intro nav — these base styles just keep the real nav's
+   an5had logo crisp before brand.js injects its own copy. */
+.an5-logo { display: inline-flex; align-items: center; gap: 10px; line-height: 1; color: #fff; text-decoration: none; }
+.an5-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(150deg, #20242e, #0b0d11);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  font-family: "Inter", "Hanken Grotesk", sans-serif; font-weight: 700;
+  font-size: 13px; letter-spacing: -0.04em; color: #fff;
+  transition: border-color 0.3s ease;
+}
+.an5-badge-5 { color: #ff5630; }
+.an5-logo:hover .an5-badge { border-color: rgba(255, 86, 48, 0.6); }
+.an5-word { font-family: "Inter", "Hanken Grotesk", sans-serif; font-weight: 600; font-size: 19px; letter-spacing: -0.03em; color: #fff; }
+
+/* Skip control — bottom-right, clear of the real top bar */
+#cine-skip {
+  position: absolute;
+  bottom: clamp(20px, 4vh, 40px);
+  right: clamp(18px, 4vw, 40px);
+  z-index: 4;
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "Inter", "Hanken Grotesk", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 8px 15px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+#cine-skip:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+@media (max-width: 560px) {
+  #cine-cue { bottom: 3vh; }
+  #cine-skip { bottom: 14px; right: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #cine-cue i::after { animation: none; }
+}
