@@ -338,7 +338,7 @@ export const TOOLS = ['Figma', 'Framer', 'Protopie', 'Adobe XD', 'FigJam', 'Desi
 
 export const FACTS = [
   ['Now', 'Senior UX Designer, Exult Global'],
-  ['Experience', '5+ years, 4 companies'],
+  ['Experience', '5+ years'],
   ['Based', 'India, working globally'],
   ['Education', 'B.Tech, Computer Science'],
 ];
