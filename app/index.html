@@ -15,6 +15,21 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // One-time cleanup: drop any stale service worker or cache from the previous site
+      try {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function (rs) {
+            rs.forEach(function (r) { r.unregister(); });
+          }).catch(function () {});
+        }
+        if (window.caches && caches.keys) {
+          caches.keys().then(function (ks) {
+            ks.forEach(function (k) { caches.delete(k); });
+          }).catch(function () {});
+        }
+      } catch (e) {}
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
