@@ -34,8 +34,8 @@ export default function Hero() {
           <span className="line">{L2.map(([w, a], k) => <Word key={k} i={i++} accent={a}>{w}</Word>)}</span>
         </h1>
         <motion.p className="hero-sub" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.8 }}>
-          Web and mobile apps, AI-powered products, and the enterprise dashboards and design
-          systems behind them. 5+ years of it, currently at <strong>Exult Global</strong>.
+          5+ years of it, across enterprise dashboards, web and mobile apps and AI-powered
+          products. Currently at <strong>Exult Global</strong>, making complex tools feel obvious.
         </motion.p>
         <motion.div className="hero-foot" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.85, duration: 0.8 }}>
           <span className="sign">by Anshad</span>

@@ -333,9 +333,9 @@ export const EXPERIENCE = [
 ];
 
 export const CAPABILITIES = [
-  { no: '01', title: 'Enterprise & Data', body: 'Component-based dashboards, KPI tools and scalable design systems that make data-heavy platforms actually usable.' },
-  { no: '02', title: 'Product & Research', body: 'User research, journey mapping and systems thinking that line design decisions up with real business goals.' },
-  { no: '03', title: 'AI & Emerging Tech', body: 'Exploring AI-powered experiences and how technology and human behaviour keep reshaping each other.' },
+  { no: '01', title: 'Complexity, organised', body: 'I take sprawling, data-heavy products (dashboards, internal tools, multi-team platforms) and give them one coherent system. At Wheels Up that meant unifying 60+ dashboards and lifting usability by 40%.' },
+  { no: '02', title: 'Built to ship, built to count', body: 'From raw research and half-formed requirements through to engineering handoff, I judge the work by whether it ships, gets used and moves the metric, not by how it looks in a case study.' },
+  { no: '03', title: 'Always building, always ahead', body: 'I track where AI and product design are heading and build with it: prototyping AI-powered flows, trying new tools and writing about what actually works. I would rather ship the new idea than wait for the safe one.' },
 ];
 
 // High-profile clients delivered at Exult Global
