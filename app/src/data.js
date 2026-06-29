@@ -1,6 +1,6 @@
 const A = '/framer'; // downloaded Framer assets (app/public/framer)
 
-export const PORTRAIT = `${A}/4Va4fg9MhlpIsjQOTIoMSAX68wM.png`;
+export const PORTRAIT = '/portrait.jpg';
 
 export const CASES = [
   {
