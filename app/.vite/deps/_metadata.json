@@ -1,0 +1,85 @@
+{
+  "hash": "d092d58c",
+  "configHash": "fd9181d8",
+  "lockfileHash": "a2cb2841",
+  "browserHash": "e9de7909",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "9ebcc148",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "4fd0b8ff",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.js",
+      "file": "react-router-dom.js",
+      "fileHash": "5d81162e",
+      "needsInterop": false
+    },
+    "framer-motion": {
+      "src": "../../node_modules/framer-motion/dist/es/index.mjs",
+      "file": "framer-motion.js",
+      "fileHash": "dc6bf3c7",
+      "needsInterop": false
+    },
+    "qrcode": {
+      "src": "../../node_modules/qrcode/lib/browser.js",
+      "file": "qrcode.js",
+      "fileHash": "71ff8645",
+      "needsInterop": true
+    },
+    "lenis": {
+      "src": "../../node_modules/lenis/dist/lenis.mjs",
+      "file": "lenis.js",
+      "fileHash": "dfba2efe",
+      "needsInterop": false
+    },
+    "@react-three/fiber": {
+      "src": "../../node_modules/@react-three/fiber/dist/react-three-fiber.esm.js",
+      "file": "@react-three_fiber.js",
+      "fileHash": "a4f1ddc6",
+      "needsInterop": false
+    },
+    "three": {
+      "src": "../../node_modules/three/build/three.module.js",
+      "file": "three.js",
+      "fileHash": "efc0c16e",
+      "needsInterop": false
+    },
+    "three/examples/jsm/geometries/RoundedBoxGeometry.js": {
+      "src": "../../node_modules/three/examples/jsm/geometries/RoundedBoxGeometry.js",
+      "file": "three_examples_jsm_geometries_RoundedBoxGeometry__js.js",
+      "fileHash": "822dfcd5",
+      "needsInterop": false
+    },
+    "three/examples/jsm/environments/RoomEnvironment.js": {
+      "src": "../../node_modules/three/examples/jsm/environments/RoomEnvironment.js",
+      "file": "three_examples_jsm_environments_RoomEnvironment__js.js",
+      "fileHash": "400b14be",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-VJHJBREC": {
+      "file": "chunk-VJHJBREC.js"
+    },
+    "chunk-RZSASJON": {
+      "file": "chunk-RZSASJON.js"
+    },
+    "chunk-TWJRYSII": {
+      "file": "chunk-TWJRYSII.js"
+    },
+    "chunk-273FDHGN": {
+      "file": "chunk-273FDHGN.js"
+    },
+    "chunk-DC5AMYBS": {
+      "file": "chunk-DC5AMYBS.js"
+    }
+  }
+}
