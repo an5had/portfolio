@@ -36,6 +36,15 @@ function Visual({ c }) {
   return (
     <Link to={`/works/${c.id}`} className="case-visual" data-cursor="view" style={{ background: `linear-gradient(140deg, ${c.accent}, #0a0d12)` }}>
       <span className="case-no">{c.no}</span>
+      {c.locked && (
+        <span className="case-lock" title="Password protected">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="4" y="11" width="16" height="9" rx="2" />
+            <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+          </svg>
+          Protected
+        </span>
+      )}
       {c.img
         ? <img src={c.img} alt={c.title} loading="lazy" />
         : <div className="mock"><div className="bar" /><div className="grid"><i /><i /><i /><i /><i /><i /></div></div>}

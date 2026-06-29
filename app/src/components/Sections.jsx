@@ -1,5 +1,5 @@
 import Reveal from './Reveal.jsx';
-import { CAPABILITIES, TOOLS, FACTS, SOCIALS, EXPERIENCE, PORTRAIT } from '../data.js';
+import { CAPABILITIES, TOOLS, FACTS, SOCIALS, EXPERIENCE, CLIENTS, PORTRAIT } from '../data.js';
 
 const MARQUEE = ['Enterprise Platforms', 'Data & Dashboards', 'AI-Powered Products', 'Design Systems', 'UX Research', 'Product Strategy'];
 
@@ -24,9 +24,10 @@ export function Intro() {
       </Reveal>
       <Reveal as="p" className="intro-body" delay={0.1}>
         Senior UX Designer at Exult Global, working across enterprise systems, analytics,
-        fintech and consumer products for clients including Wheels Up, HIG Capital, Dexcom
-        and CyberProof. I turn vague, under-defined problems into products that ship and get
-        measured, staying close to the work from early research through to engineering handoff.
+        fintech and consumer products for high-profile clients including Wheels Up, Dexcom,
+        HIG Capital, Zayo and CyberProof. I turn vague, under-defined problems into products
+        that ship and get measured, staying close to the work from early research through to
+        engineering handoff.
       </Reveal>
     </section>
   );
@@ -93,6 +94,14 @@ export function Experience() {
     <section className="experience container" id="experience">
       <Reveal as="p" className="eyebrow">Where I’ve worked</Reveal>
       <Reveal as="h2" className="section-title" delay={0.05}>5+ years, four teams.</Reveal>
+      <Reveal className="clients" delay={0.1}>
+        <span className="clients-label">Selected clients at Exult Global</span>
+        <div className="clients-row">
+          {CLIENTS.map(([name, url]) => (
+            <a key={name} href={url} target="_blank" rel="noopener noreferrer" data-cursor="link">{name}</a>
+          ))}
+        </div>
+      </Reveal>
       <ul className="timeline">
         {EXPERIENCE.map((e, k) => (
           <Reveal as="li" className="tl-item" key={e.org} delay={k * 0.06}>

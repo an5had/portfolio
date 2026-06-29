@@ -442,4 +442,64 @@ img { display: block; max-width: 100%; }
 .resume-btn span { color: var(--accent); font-size: 13px; letter-spacing: 0.04em; }
 .resume-btn:hover { border-color: var(--accent); background: rgba(255, 86, 48, 0.08); }
 
+/* selected clients strip */
+.clients { margin: 6px 0 30px; }
+.clients-label { display: block; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
+.clients-row { display: flex; flex-wrap: wrap; gap: 10px 12px; }
+.clients-row a {
+  font-family: var(--serif); font-size: 22px; line-height: 1; color: var(--fg);
+  padding: 9px 16px; border: 1px solid var(--line); border-radius: 999px;
+  text-decoration: none; transition: border-color 0.25s var(--ease), color 0.25s var(--ease), background 0.25s var(--ease);
+}
+.clients-row a:hover { border-color: var(--accent); color: var(--accent); background: rgba(255, 86, 48, 0.06); }
+@media (max-width: 640px) { .clients-row a { font-size: 18px; padding: 7px 13px; } }
+
+/* protected case badge on the work card */
+.case-lock {
+  position: absolute; top: 16px; right: 18px; z-index: 3;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #fff;
+  padding: 6px 11px; border-radius: 999px;
+  background: rgba(10, 12, 18, 0.55); border: 1px solid rgba(255,255,255,0.22);
+  backdrop-filter: blur(6px);
+}
+.case-lock svg { opacity: 0.9; }
+
+/* password gate */
+.cs-lock { min-height: 78vh; display: grid; place-items: center; padding: 120px 22px 80px; }
+.cs-lock-card {
+  width: 100%; max-width: 520px; text-align: center;
+  border: 1px solid var(--line); border-radius: 20px; padding: 44px 38px;
+  background: linear-gradient(160deg, var(--bg-2), var(--bg));
+}
+.cs-lock-icon {
+  display: inline-grid; place-items: center; width: 50px; height: 50px; margin-bottom: 20px;
+  border-radius: 14px; color: var(--fg); border: 1px solid var(--line); background: rgba(255,255,255,0.03);
+}
+.cs-lock-eyebrow { font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin: 0 0 12px; }
+.cs-lock-title { font-family: var(--serif); font-size: 30px; line-height: 1.12; font-weight: 400; margin: 0 0 14px; }
+.cs-lock-body { font-size: 15px; line-height: 1.6; color: var(--muted); margin: 0 auto 26px; max-width: 420px; }
+.cs-lock-form { display: flex; gap: 10px; margin-bottom: 14px; }
+.cs-lock-form input {
+  flex: 1; min-width: 0; padding: 13px 16px; font-size: 15px; color: var(--fg);
+  background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 12px; outline: none;
+  transition: border-color 0.25s var(--ease);
+}
+.cs-lock-form input:focus { border-color: var(--accent); }
+.cs-lock-form input::placeholder { color: var(--dim); }
+.cs-lock-form button {
+  padding: 13px 22px; font-size: 14px; font-weight: 500; color: #fff; cursor: pointer;
+  background: var(--accent); border: none; border-radius: 12px; transition: filter 0.2s var(--ease);
+}
+.cs-lock-form button:hover { filter: brightness(1.08); }
+.cs-lock-error { font-size: 13.5px; color: var(--accent); margin: 0 0 16px; }
+.cs-lock-links { display: flex; justify-content: center; gap: 22px; margin-top: 8px; }
+.cs-lock-links a { font-size: 13.5px; color: var(--muted); text-decoration: none; transition: color 0.2s var(--ease); }
+.cs-lock-links a:hover { color: var(--fg); }
+@media (max-width: 560px) {
+  .cs-lock-card { padding: 36px 24px; }
+  .cs-lock-title { font-size: 26px; }
+  .cs-lock-form { flex-direction: column; }
+}
+
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

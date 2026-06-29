@@ -13,6 +13,7 @@ export const CASES = [
     role: 'UX Designer',
     accent: '#16243f',
     img: '/cases/wheelsup-cover.jpg',
+    locked: true,
     summary:
       'I partnered directly with the VP of Business Intelligence to redesign and unify Wheels Up’s internal reporting ecosystem across operations, sales, maintenance, finance and member services, building a dedicated BI design system behind 60+ dashboards.',
     meta: [
@@ -325,7 +326,7 @@ export const EXPLORATIONS = [
 ];
 
 export const EXPERIENCE = [
-  { role: 'Senior UI/UX Designer', org: 'Exult Global', period: 'Feb 2024 - Present', note: 'Enterprise and analytics products for Wheels Up, HIG Capital, Dexcom and CyberProof. Component-based dashboards and decision tools.' },
+  { role: 'Senior UI/UX Designer', org: 'Exult Global', period: 'Feb 2024 - Present', note: 'Enterprise and analytics products for high-profile clients including Wheels Up, Dexcom, HIG Capital, Zayo and CyberProof. Component-based dashboards and decision tools.' },
   { role: 'UI/UX Designer', org: 'JIC IT Solutions', period: 'Jul 2023 - Feb 2024', note: 'Shipped Sea Arabia, Jobin Arabia (ATS), and the Bansal TMT loyalty and Hospital discount apps with CMS.' },
   { role: 'UI/UX Designer', org: 'WeCreate (Mintyfusion)', period: 'Jul 2021 - Apr 2023', note: 'Web and mobile across fintech and services. Designed SolarEnvoy, which reached #6 in Productivity on the App Store.' },
   { role: 'Creative Design Consultant', org: 'Freelance', period: 'Aug 2020 - Jul 2021', note: 'End to end UX and visual design for startups and SMEs, including Shutterup and Skillbus.' },
@@ -335,6 +336,15 @@ export const CAPABILITIES = [
   { no: '01', title: 'Enterprise & Data', body: 'Component-based dashboards, KPI tools and scalable design systems that make data-heavy platforms actually usable.' },
   { no: '02', title: 'Product & Research', body: 'User research, journey mapping and systems thinking that line design decisions up with real business goals.' },
   { no: '03', title: 'AI & Emerging Tech', body: 'Exploring AI-powered experiences and how technology and human behaviour keep reshaping each other.' },
+];
+
+// High-profile clients delivered at Exult Global
+export const CLIENTS = [
+  ['Wheels Up', 'https://wheelsup.com'],
+  ['Dexcom', 'https://www.dexcom.com/'],
+  ['HIG Capital', 'https://hig.com/'],
+  ['Zayo', 'https://www.zayo.com/'],
+  ['CyberProof', 'https://www.cyberproof.com/'],
 ];
 
 export const TOOLS = ['Figma', 'Framer', 'Protopie', 'Adobe XD', 'FigJam', 'Design Systems', 'Prototyping', 'Usability Testing', 'Data Viz', 'HTML/CSS'];
