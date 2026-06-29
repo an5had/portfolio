@@ -33,6 +33,25 @@ export function Intro() {
   );
 }
 
+export function Clients() {
+  return (
+    <section className="clients-band" aria-label="Selected clients">
+      <div className="container">
+        <Reveal as="p" className="clients-eyebrow">
+          High-profile clients I’ve designed for at <span>Exult Global</span>
+        </Reveal>
+        <Reveal className="clients-logos" delay={0.05}>
+          {CLIENTS.map((c) => (
+            <a key={c.name} href={c.url} target="_blank" rel="noopener noreferrer" data-cursor="link" aria-label={c.name} title={c.name}>
+              <img src={c.logo} alt={c.name} loading="lazy" />
+            </a>
+          ))}
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 export function Capabilities() {
   return (
     <section className="capabilities container" id="capabilities">
@@ -94,14 +113,6 @@ export function Experience() {
     <section className="experience container" id="experience">
       <Reveal as="p" className="eyebrow">Where I’ve worked</Reveal>
       <Reveal as="h2" className="section-title" delay={0.05}>5+ years, four teams.</Reveal>
-      <Reveal className="clients" delay={0.1}>
-        <span className="clients-label">Selected clients at Exult Global</span>
-        <div className="clients-row">
-          {CLIENTS.map(([name, url]) => (
-            <a key={name} href={url} target="_blank" rel="noopener noreferrer" data-cursor="link">{name}</a>
-          ))}
-        </div>
-      </Reveal>
       <ul className="timeline">
         {EXPERIENCE.map((e, k) => (
           <Reveal as="li" className="tl-item" key={e.org} delay={k * 0.06}>

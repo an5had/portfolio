@@ -442,17 +442,26 @@ img { display: block; max-width: 100%; }
 .resume-btn span { color: var(--accent); font-size: 13px; letter-spacing: 0.04em; }
 .resume-btn:hover { border-color: var(--accent); background: rgba(255, 86, 48, 0.08); }
 
-/* selected clients strip */
-.clients { margin: 6px 0 30px; }
-.clients-label { display: block; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
-.clients-row { display: flex; flex-wrap: wrap; gap: 10px 12px; }
-.clients-row a {
-  font-family: var(--serif); font-size: 22px; line-height: 1; color: var(--fg);
-  padding: 9px 16px; border: 1px solid var(--line); border-radius: 999px;
-  text-decoration: none; transition: border-color 0.25s var(--ease), color 0.25s var(--ease), background 0.25s var(--ease);
+/* clients logo band */
+.clients-band { padding: 72px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.clients-eyebrow { text-align: center; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 40px; }
+.clients-eyebrow span { color: var(--muted); }
+.clients-logos { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 40px 60px; }
+.clients-logos a { display: inline-flex; align-items: center; }
+.clients-logos img {
+  height: 27px; width: auto; max-width: 168px; object-fit: contain;
+  filter: grayscale(1) brightness(0) invert(1);
+  opacity: 0.46; transition: opacity 0.3s var(--ease), filter 0.3s var(--ease);
 }
-.clients-row a:hover { border-color: var(--accent); color: var(--accent); background: rgba(255, 86, 48, 0.06); }
-@media (max-width: 640px) { .clients-row a { font-size: 18px; padding: 7px 13px; } }
+.clients-logos a:hover img { filter: none; opacity: 1; }
+.clients-logos img[alt="HIG Capital"] { height: 34px; }
+.clients-logos img[alt="Dexcom"] { height: 24px; }
+@media (max-width: 640px) {
+  .clients-band { padding: 52px 0; }
+  .clients-logos { gap: 30px 38px; }
+  .clients-logos img { height: 22px; max-width: 120px; }
+  .clients-logos img[alt="HIG Capital"] { height: 28px; }
+}
 
 /* protected case badge on the work card */
 .case-lock {

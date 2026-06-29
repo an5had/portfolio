@@ -340,11 +340,11 @@ export const CAPABILITIES = [
 
 // High-profile clients delivered at Exult Global
 export const CLIENTS = [
-  ['Wheels Up', 'https://wheelsup.com'],
-  ['Dexcom', 'https://www.dexcom.com/'],
-  ['HIG Capital', 'https://hig.com/'],
-  ['Zayo', 'https://www.zayo.com/'],
-  ['CyberProof', 'https://www.cyberproof.com/'],
+  { name: 'Wheels Up', url: 'https://wheelsup.com', logo: '/logos/wheelsup.svg' },
+  { name: 'Dexcom', url: 'https://www.dexcom.com/', logo: '/logos/dexcom.svg' },
+  { name: 'HIG Capital', url: 'https://hig.com/', logo: '/logos/hig.svg' },
+  { name: 'Zayo', url: 'https://www.zayo.com/', logo: '/logos/zayo.png' },
+  { name: 'CyberProof', url: 'https://www.cyberproof.com/', logo: '/logos/cyberproof.png' },
 ];
 
 export const TOOLS = ['Figma', 'Framer', 'Protopie', 'Adobe XD', 'FigJam', 'Design Systems', 'Prototyping', 'Usability Testing', 'Data Viz', 'HTML/CSS'];
