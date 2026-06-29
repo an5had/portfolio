@@ -356,6 +356,17 @@ export const FACTS = [
   ['Education', 'B.Tech, Computer Science'],
 ];
 
+export const ARTICLES = [
+  {
+    title: 'AI-Powered Usability Testing: The Revolution Our UX Research Toolkit Needs',
+    blurb: 'What if a usability test could be perfectly consistent and deeply insightful at the same time? A look at how AI voice moderators are quietly reshaping UX research, and what that means for the rest of our toolkit.',
+    date: 'Apr 2025',
+    read: '3 min read',
+    tag: 'UX Research · AI',
+    url: 'https://medium.com/@an5had/ai-powered-usability-testing-the-revolution-our-ux-research-toolkit-needs-2ecbb1a3eb1f',
+  },
+];
+
 export const SOCIALS = [
   ['LinkedIn', 'https://in.linkedin.com/in/an5had'],
   ['Instagram', 'https://www.instagram.com/an5had/'],

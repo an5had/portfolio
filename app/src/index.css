@@ -244,6 +244,37 @@ img { display: block; max-width: 100%; }
 .tl-body p { margin-top: 8px; color: var(--muted); font-weight: 300; max-width: 64ch; }
 @media (max-width: 720px) { .tl-item { grid-template-columns: 1fr; gap: 8px; } }
 
+/* articles */
+.articles { padding-bottom: clamp(20px, 5vh, 56px); }
+.articles > .eyebrow { margin-bottom: 18px; }
+.article-card { margin-bottom: 22px; }
+.article-card a {
+  display: block; border: 1px solid var(--line); border-radius: 18px; padding: clamp(26px, 4vw, 38px);
+  text-decoration: none; color: var(--fg); background: linear-gradient(160deg, var(--bg-2), var(--bg));
+  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.article-card a:hover { border-color: rgba(255, 255, 255, 0.26); transform: translateY(-2px); }
+.article-meta { display: flex; justify-content: space-between; gap: 14px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); margin-bottom: 16px; }
+.article-card h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(24px, 3vw, 32px); line-height: 1.16; letter-spacing: -0.01em; margin: 0 0 12px; }
+.article-card p { font-size: 15px; line-height: 1.62; color: var(--muted); font-weight: 300; margin: 0 0 18px; max-width: 62ch; }
+.article-link { font-size: 14px; color: var(--accent); }
+
+/* linkedin card */
+.li-card {
+  border: 1px solid rgba(10, 102, 194, 0.35); border-radius: 18px; padding: clamp(26px, 4vw, 38px);
+  background: linear-gradient(160deg, rgba(10, 102, 194, 0.12), var(--bg));
+}
+.li-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.li-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 11px; background: #0A66C2; color: #fff; flex: none; }
+.li-head strong { display: block; font-size: 16px; font-weight: 600; }
+.li-head span { font-size: 13px; color: var(--muted); }
+.li-card p { font-size: 15px; line-height: 1.65; color: var(--muted); font-weight: 300; margin: 0 0 22px; max-width: 64ch; }
+.li-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 999px; background: #0A66C2; color: #fff; font-size: 14px; font-weight: 500; text-decoration: none; transition: filter 0.2s var(--ease); }
+.li-btn:hover { filter: brightness(1.1); }
+@media (max-width: 640px) {
+  .article-meta { flex-direction: column; gap: 4px; }
+}
+
 /* coming soon */
 .soon { padding-bottom: clamp(40px, 8vh, 90px); }
 .soon-card { border: 1px solid var(--line); border-radius: 16px; padding: clamp(28px, 5vw, 56px); background: var(--bg-2); }
