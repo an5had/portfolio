@@ -34,18 +34,14 @@ export default function Hero() {
           <span className="line">{L2.map(([w, a], k) => <Word key={k} i={i++} accent={a}>{w}</Word>)}</span>
         </h1>
         <motion.p className="hero-sub" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.8 }}>
-          5+ years turning complex enterprise, data &amp; AI products into experiences people
-          actually understand. Currently at <strong>Exult Global</strong>.
+          Web and mobile apps, AI-powered products, and the enterprise dashboards and design
+          systems behind them. 5+ years of it, currently at <strong>Exult Global</strong>.
         </motion.p>
         <motion.div className="hero-foot" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.85, duration: 0.8 }}>
           <span className="sign">by Anshad</span>
           <a className="scroll-cue" href="#work" data-cursor="link"><span>Scroll</span><i /></a>
         </motion.div>
       </div>
-      <motion.div className="hero-side" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1, duration: 0.8 }}>
-        <span>📍 India · Remote</span>
-        <span className="dot-live">Open to select work</span>
-      </motion.div>
     </section>
   );
 }

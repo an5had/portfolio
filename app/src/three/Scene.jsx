@@ -44,22 +44,30 @@ function CameraModel() {
   const scrollP = useRef(0);
   const grown = useRef(0);
 
+  const mobile = useRef(false);
+
   useEffect(() => {
     if (ref.current) ref.current.scale.setScalar(0);
     const onScroll = () => { scrollP.current = Math.min(1, window.scrollY / window.innerHeight); };
+    const onResize = () => { mobile.current = window.innerWidth <= 720; };
     window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('resize', onResize);
+    onScroll(); onResize();
+    return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onResize); };
   }, []);
 
   useFrame((state, dt) => {
     const t = state.clock.elapsedTime, p = scrollP.current, o = ref.current;
     if (!o) return;
+    const m = mobile.current;
     grown.current = Math.min(1, grown.current + dt * 0.75);
     const s = 1 - Math.pow(1 - grown.current, 3);
-    o.scale.setScalar(s);
-    o.position.set(1.7 + Math.sin(t * 0.5) * 0.06, 1.0 + Math.sin(t * 0.8) * 0.12 - p * 2.4, 0);
-    o.rotation.set(0.15 + p * 0.5, -0.6 + Math.sin(t * 0.4) * 0.12 + p * 1.5, 0.04);
+    o.scale.setScalar(s * (m ? 0.74 : 1));
+    // On mobile, centre the camera and lift it above the headline so it is never cropped.
+    const x = m ? Math.sin(t * 0.5) * 0.05 : 1.7 + Math.sin(t * 0.5) * 0.06;
+    const y = (m ? 1.7 : 1.0) + Math.sin(t * 0.8) * 0.12 - p * 2.4;
+    o.position.set(x, y, 0);
+    o.rotation.set(0.15 + p * 0.5, (m ? -0.25 : -0.6) + Math.sin(t * 0.4) * 0.12 + p * 1.5, 0.04);
   });
 
   return <primitive object={group} ref={ref} />;
