@@ -9,7 +9,7 @@ const mat = (c, m, r, o) => new THREE.MeshStandardMaterial(Object.assign({ color
 function buildCamera() {
   const g = new THREE.Group();
   const body = mat(0x17181e, 0.72, 0.34), dark = mat(0x070809, 0.5, 0.5), metal = mat(0xb9c0c9, 1, 0.22);
-  const glass = mat(0x0a1733, 1, 0.04, { emissive: 0x16345f, emissiveIntensity: 0.55 });
+  const glass = mat(0x05080f, 1, 0.06, { emissive: 0x14274d, emissiveIntensity: 0.3 });
 
   g.add(new THREE.Mesh(new RoundedBoxGeometry(3.3, 2.1, 1.2, 6, 0.16), body));
   const grip = new THREE.Mesh(new RoundedBoxGeometry(0.72, 2.0, 1.25, 5, 0.24), dark); grip.position.x = 1.65; g.add(grip);
@@ -38,9 +38,14 @@ function buildCamera() {
   const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.86, 0.92, 1.5, 56), dark); barrel.rotation.x = Math.PI / 2; barrel.position.z = 0.92; lens.add(barrel);
   [0.66, 1.04].forEach((z) => { const r2 = new THREE.Mesh(new THREE.CylinderGeometry(0.94, 0.94, 0.16, 56), body); r2.rotation.x = Math.PI / 2; r2.position.z = z; lens.add(r2); });
   const fr = new THREE.Mesh(new THREE.TorusGeometry(0.82, 0.09, 18, 56), metal); fr.position.z = 1.66; lens.add(fr);
-  const gl = new THREE.Mesh(new THREE.SphereGeometry(0.78, 48, 32, 0, Math.PI * 2, 0, Math.PI * 0.32), glass); gl.rotation.x = -Math.PI / 2; gl.position.z = 1.62; lens.add(gl);
   // dark inner barrel for depth behind the glass
-  const inner = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.66, 0.5, 40), dark); inner.rotation.x = Math.PI / 2; inner.position.z = 1.4; lens.add(inner);
+  const inner = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.66, 0.5, 40), dark); inner.rotation.x = Math.PI / 2; inner.position.z = 1.42; lens.add(inner);
+  // flat rear element so the barrel never reads as hollow
+  const rear = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.04, 40), glass); rear.rotation.x = Math.PI / 2; rear.position.z = 1.48; lens.add(rear);
+  // convex front element (bulges toward the viewer)
+  const gl = new THREE.Mesh(new THREE.SphereGeometry(0.78, 48, 32, 0, Math.PI * 2, 0, Math.PI * 0.32), glass); gl.rotation.x = Math.PI / 2; gl.position.z = 0.92; lens.add(gl);
+  // blue-violet coating glint around the front element
+  const coat = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.03, 12, 48), mat(0x2f5099, 0.9, 0.16, { emissive: 0x1d3262, emissiveIntensity: 0.55 })); coat.position.z = 1.5; lens.add(coat);
   // rubber focus ring around the barrel
   const focus = new THREE.Mesh(new THREE.CylinderGeometry(0.96, 0.96, 0.34, 56), rubber); focus.rotation.x = Math.PI / 2; focus.position.z = 0.85; lens.add(focus);
   // lens hood at the front
