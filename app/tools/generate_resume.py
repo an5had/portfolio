@@ -117,11 +117,10 @@ story.append(Paragraph(
 
 # ---- impact band ----
 stats_band([
-    ('60+', 'dashboards unified<br/>into one BI system'),
-    ('40%', 'boost to usability<br/>(Wheels Up)'),
-    ('25%', 'faster report<br/>generation'),
+    ('5+', 'years across enterprise,<br/>fintech &amp; consumer'),
+    ('5', 'enterprise clients<br/>(US &amp; GCC)'),
+    ('60+', 'dashboards unified into<br/>one BI design system'),
     ('#6', 'Productivity, App Store<br/>(SolarEnvoy)'),
-    ('5+', 'years across<br/>US &amp; GCC clients'),
 ])
 
 # ---- experience ----
@@ -166,12 +165,8 @@ for lbl, items in [
 ]:
     story.append(Paragraph('<b>%s:</b> %s' % (lbl, items), skill_s))
 
-# ---- writing + education ----
-section('Writing &amp; Education')
-story.append(Paragraph(
-    '<b>Writing:</b> Publishes on UX, AI and product design, including '
-    + link('https://medium.com/@an5had/ai-powered-usability-testing-the-revolution-our-ux-research-toolkit-needs-2ecbb1a3eb1f',
-            '"AI-Powered Usability Testing"') + ' on Medium.', skill_s))
+# ---- education ----
+section('Education')
 edu = Table([[
     Paragraph('<b>B.Tech, Computer Science Engineering</b> &nbsp;&middot;&nbsp; MES College of Engineering', rl_s),
     Paragraph('India &nbsp;&middot;&nbsp; 2021', rr_s),
