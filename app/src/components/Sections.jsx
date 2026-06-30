@@ -132,10 +132,9 @@ export function Contact() {
   return (
     <section className="contact" id="contact">
       <div className="container">
-        <Reveal as="p" className="eyebrow">Let’s talk</Reveal>
+        <Reveal as="p" className="eyebrow">Get in touch</Reveal>
         <Reveal as="h2" className="contact-lead" delay={0.05}>
-          You’re on <span className="u">itsmyportfolio.com</span>, so you already know whose
-          this is. Let’s talk.
+          You’re already on <span className="u">itsmyportfolio.com</span>, so let’s talk.
         </Reveal>
         <Reveal delay={0.1}>
           <a className="contact-mail" href="mailto:anuanshadpgm@gmail.com" data-cursor="link">
