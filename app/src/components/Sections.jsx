@@ -132,16 +132,23 @@ export function Contact() {
   return (
     <section className="contact" id="contact">
       <div className="container">
-        <Reveal as="p" className="eyebrow">Get in touch</Reveal>
+        <Reveal as="p" className="eyebrow">Say hello</Reveal>
         <Reveal as="h2" className="contact-lead" delay={0.05}>
-          You’re already on <span className="u">itsmyportfolio.com</span>, so let’s talk.
+          Tell me what you’re building.
         </Reveal>
-        <Reveal delay={0.1}>
+        <Reveal as="p" className="contact-sub" delay={0.1}>
+          A product to design, a role to fill, or just a good design conversation, I’m glad you
+          stopped by. Drop me a line and I’ll get back to you, usually within a day.
+        </Reveal>
+        <Reveal delay={0.15}>
           <a className="contact-mail" href="mailto:anuanshadpgm@gmail.com" data-cursor="link">
             anuanshadpgm@gmail.com
           </a>
         </Reveal>
-        <Reveal className="contact-socials" delay={0.15}>
+        <Reveal as="p" className="contact-meta" delay={0.2}>
+          Based in India, working globally · Open to new roles and freelance projects
+        </Reveal>
+        <Reveal className="contact-socials" delay={0.25}>
           {SOCIALS.map(([label, url]) => (
             <a key={label} href={url} target="_blank" rel="noopener noreferrer" data-cursor="link">{label}</a>
           ))}
