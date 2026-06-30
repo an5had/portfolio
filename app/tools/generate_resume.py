@@ -35,7 +35,10 @@ sec_s = ParagraphStyle('sec', fontName='Helvetica-Bold', fontSize=10, leading=12
 rl_s = ParagraphStyle('rl', fontName='Helvetica-Bold', fontSize=10.3, leading=12.5, textColor=INK)
 rr_s = ParagraphStyle('rr', fontName='Helvetica', fontSize=8.7, leading=12.5, textColor=GRAY, alignment=2)
 sub_s = ParagraphStyle('sub', fontName='Helvetica-Oblique', fontSize=8.8, leading=12, textColor=ACCENT, spaceBefore=1)
-bullet_s = ParagraphStyle('bullet', fontName='Helvetica', fontSize=9.3, leading=12.9, textColor=INK)
+bullet_s = ParagraphStyle('bullet', fontName='Helvetica', fontSize=9.3, leading=12.9, textColor=INK,
+                          leftIndent=11, bulletIndent=0, bulletFontName='Helvetica', bulletFontSize=8,
+                          bulletColor=ACCENT, spaceBefore=2.5)
+clients_s = ParagraphStyle('clients', fontName='Helvetica', fontSize=9.2, leading=13, textColor=GRAY, spaceBefore=7)
 skill_s = ParagraphStyle('skill', fontName='Helvetica', fontSize=9.3, leading=13.8, textColor=INK)
 proj_s = ParagraphStyle('proj', fontName='Helvetica', fontSize=9.3, leading=13.2, textColor=INK)
 statn_s = ParagraphStyle('statn', fontName='Helvetica-Bold', fontSize=17, leading=18, textColor=ACCENT, alignment=1)
@@ -54,10 +57,8 @@ def section(label):
 
 
 def bullets(items):
-    story.append(ListFlowable(
-        [ListItem(Paragraph(t, bullet_s), leftIndent=10, value='•') for t in items],
-        bulletType='bullet', start='•', leftIndent=10, bulletColor=ACCENT, bulletFontSize=8, spaceBefore=2,
-    ))
+    for t in items:
+        story.append(Paragraph(t, bullet_s, bulletText='•'))
 
 
 def role(title, company, dates, place, items, sub=None):
@@ -114,14 +115,9 @@ story.append(Paragraph(
     'what ships, gets adopted and moves the metric. Currently designing enterprise BI and AI-informed products at '
     '<b>Exult Global</b> for clients across the US and GCC.',
     summary_s))
-
-# ---- impact band ----
-stats_band([
-    ('5+', 'years across enterprise,<br/>fintech &amp; consumer'),
-    ('5', 'enterprise clients<br/>(US &amp; GCC)'),
-    ('60+', 'dashboards unified into<br/>one BI design system'),
-    ('#6', 'Productivity, App Store<br/>(SolarEnvoy)'),
-])
+story.append(Paragraph(
+    '<b>Selected clients:</b> Wheels Up, Dexcom, HIG Capital, Zayo, CyberProof &nbsp;&middot;&nbsp; US &amp; GCC',
+    clients_s))
 
 # ---- experience ----
 section('Professional Experience')
