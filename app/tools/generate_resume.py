@@ -17,7 +17,8 @@ SOFT = HexColor('#FBEDE9')
 LINKC = '#1F4ED8'
 
 OUT = 'public/anshad-resume.pdf'
-CW = 178 * mm  # content width (A4 210 - 2*16)
+CW = 178 * mm - 12  # content width: A4 210 - 2*16 margins, minus the frame's 6pt padding each side
+                    # (keeps Table rows aligned with the Paragraph text instead of snapping to the margin)
 
 doc = SimpleDocTemplate(
     OUT, pagesize=A4,
