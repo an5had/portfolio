@@ -37,15 +37,28 @@ function buildCamera() {
   const lens = new THREE.Group();
   const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.86, 0.92, 1.5, 56), dark); barrel.rotation.x = Math.PI / 2; barrel.position.z = 0.92; lens.add(barrel);
   [0.66, 1.04].forEach((z) => { const r2 = new THREE.Mesh(new THREE.CylinderGeometry(0.94, 0.94, 0.16, 56), body); r2.rotation.x = Math.PI / 2; r2.position.z = z; lens.add(r2); });
-  const fr = new THREE.Mesh(new THREE.TorusGeometry(0.82, 0.09, 18, 56), metal); fr.position.z = 1.66; lens.add(fr);
-  // dark inner barrel for depth behind the glass
-  const inner = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.66, 0.5, 40), dark); inner.rotation.x = Math.PI / 2; inner.position.z = 1.42; lens.add(inner);
-  // flat rear element so the barrel never reads as hollow
-  const rear = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.04, 40), glass); rear.rotation.x = Math.PI / 2; rear.position.z = 1.48; lens.add(rear);
-  // convex front element (bulges toward the viewer)
-  const gl = new THREE.Mesh(new THREE.SphereGeometry(0.78, 48, 32, 0, Math.PI * 2, 0, Math.PI * 0.32), glass); gl.rotation.x = Math.PI / 2; gl.position.z = 0.92; lens.add(gl);
-  // blue-violet coating glint around the front element
-  const coat = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.03, 12, 48), mat(0x2f5099, 0.9, 0.16, { emissive: 0x1d3262, emissiveIntensity: 0.55 })); coat.position.z = 1.5; lens.add(coat);
+  // thin matte front bezel (no shiny chrome ring)
+  const bezel = new THREE.Mesh(new THREE.TorusGeometry(0.84, 0.055, 16, 56), mat(0x0e1014, 0.5, 0.45)); bezel.position.z = 1.6; lens.add(bezel);
+  // dark inner barrel for depth
+  const inner = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.74, 0.6, 44), dark); inner.rotation.x = Math.PI / 2; inner.position.z = 1.1; lens.add(inner);
+  // dark pupil at the back of the opening
+  const pupil = new THREE.Mesh(new THREE.CircleGeometry(0.26, 28), mat(0x020305, 0.2, 0.7)); pupil.position.z = 1.38; lens.add(pupil);
+  // aperture iris: dark metal plate with a heptagonal opening
+  const SIDES = 7, HR = 0.26;
+  const ap = new THREE.Shape(); ap.absarc(0, 0, 0.7, 0, Math.PI * 2, false);
+  const hole = new THREE.Path();
+  for (let i = 0; i <= SIDES; i++) { const a = (i / SIDES) * Math.PI * 2 + Math.PI / 2; const x = Math.cos(a) * HR, y = Math.sin(a) * HR; i === 0 ? hole.moveTo(x, y) : hole.lineTo(x, y); }
+  ap.holes.push(hole);
+  const iris = new THREE.Mesh(new THREE.ShapeGeometry(ap), mat(0x3a3f49, 0.92, 0.32, { emissive: 0x1c1f26, emissiveIntensity: 0.5 })); iris.position.z = 1.52; lens.add(iris);
+  // blade seams radiating from the opening
+  for (let i = 0; i < SIDES; i++) {
+    const a = (i / SIDES) * Math.PI * 2 + Math.PI / 2 + Math.PI / SIDES;
+    const seam = new THREE.Mesh(new THREE.BoxGeometry(0.016, 0.46, 0.01), mat(0x05060a, 0.4, 0.6));
+    seam.position.set(Math.cos(a) * 0.49, Math.sin(a) * 0.49, 1.53); seam.rotation.z = a - Math.PI / 2; lens.add(seam);
+  }
+  // subtle full-cover glass sheen (very transparent, keeps the aperture visible)
+  const glassMat = mat(0x0a1020, 1, 0.05, { transparent: true, opacity: 0.16, emissive: 0x12203f, emissiveIntensity: 0.14 });
+  const gl = new THREE.Mesh(new THREE.SphereGeometry(0.82, 44, 28, 0, Math.PI * 2, 0, Math.PI * 0.34), glassMat); gl.rotation.x = Math.PI / 2; gl.position.z = 1.1; lens.add(gl);
   // rubber focus ring around the barrel
   const focus = new THREE.Mesh(new THREE.CylinderGeometry(0.96, 0.96, 0.34, 56), rubber); focus.rotation.x = Math.PI / 2; focus.position.z = 0.85; lens.add(focus);
   // lens hood at the front
