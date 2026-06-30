@@ -99,7 +99,7 @@ export function About() {
           {FACTS.map(([k, v]) => (<li key={k}><b>{k}</b><span>{v}</span></li>))}
         </Reveal>
         <Reveal delay={0.2}>
-          <a className="resume-btn" href="/anshad-resume.pdf" download="Muhammed Anshad A - Product Designer.pdf" data-cursor="link">
+          <a className="resume-btn" href="/anshad-resume.pdf" download="Muhammed Anshad A - Resume.pdf" data-cursor="link">
             Download résumé <span>PDF ↓</span>
           </a>
         </Reveal>
@@ -146,7 +146,7 @@ export function Contact() {
           {SOCIALS.map(([label, url]) => (
             <a key={label} href={url} target="_blank" rel="noopener noreferrer" data-cursor="link">{label}</a>
           ))}
-          <a href="/anshad-resume.pdf" download="Muhammed Anshad A - Product Designer.pdf" data-cursor="link">Résumé (PDF)</a>
+          <a href="/anshad-resume.pdf" download="Muhammed Anshad A - Resume.pdf" data-cursor="link">Résumé (PDF)</a>
         </Reveal>
       </div>
     </section>
