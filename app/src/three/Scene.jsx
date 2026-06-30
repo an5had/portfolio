@@ -19,11 +19,32 @@ function buildCamera() {
   const shutter = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.14, 28), metal); shutter.position.set(1.15, 1.18, 0.25); g.add(shutter);
   const ring = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.04, 12, 28), mat(0xff5630, 0.4, 0.4)); ring.rotation.x = Math.PI / 2; ring.position.set(1.15, 1.12, 0.25); g.add(ring);
 
+  // --- added camera detail (kept to simple primitives) ---
+  const rubber = mat(0x0c0d11, 0.15, 0.86), warm = mat(0xff8a4d, 0.4, 0.34, { emissive: 0xff5a1f, emissiveIntensity: 0.7 });
+  // two-tier left mode dial
+  const dialCap = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.1, 32), metal); dialCap.position.set(-1.2, 1.36, -0.1); g.add(dialCap);
+  // viewfinder eyepiece + rubber eyecup at the back of the prism
+  const eyepiece = new THREE.Mesh(new RoundedBoxGeometry(0.8, 0.5, 0.24, 4, 0.08), dark); eyepiece.position.set(-0.15, 1.12, -0.58); g.add(eyepiece);
+  const eyecup = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.055, 12, 24), rubber); eyecup.position.set(-0.15, 1.12, -0.72); g.add(eyecup);
+  // bottom plate
+  const base = new THREE.Mesh(new RoundedBoxGeometry(3.25, 0.18, 1.16, 4, 0.06), metal); base.position.set(0, -1.08, 0); g.add(base);
+  // strap lugs on the shoulders
+  [-1.6, 1.6].forEach((x) => { const lug = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.04, 8, 16), metal); lug.rotation.y = Math.PI / 2; lug.position.set(x, 0.82, 0); g.add(lug); });
+  // self-timer lamp + red mount index on the front
+  const lamp = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.08, 20), warm); lamp.rotation.x = Math.PI / 2; lamp.position.set(-1.25, 0.2, 0.61); g.add(lamp);
+  const idx = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.06, 16), mat(0xff5630, 0.3, 0.4, { emissive: 0xff5630, emissiveIntensity: 0.5 })); idx.rotation.x = Math.PI / 2; idx.position.set(0.5, -0.6, 0.61); g.add(idx);
+
   const lens = new THREE.Group();
   const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.86, 0.92, 1.5, 56), dark); barrel.rotation.x = Math.PI / 2; barrel.position.z = 0.92; lens.add(barrel);
   [0.66, 1.04].forEach((z) => { const r2 = new THREE.Mesh(new THREE.CylinderGeometry(0.94, 0.94, 0.16, 56), body); r2.rotation.x = Math.PI / 2; r2.position.z = z; lens.add(r2); });
   const fr = new THREE.Mesh(new THREE.TorusGeometry(0.82, 0.09, 18, 56), metal); fr.position.z = 1.66; lens.add(fr);
   const gl = new THREE.Mesh(new THREE.SphereGeometry(0.78, 48, 32, 0, Math.PI * 2, 0, Math.PI * 0.32), glass); gl.rotation.x = -Math.PI / 2; gl.position.z = 1.62; lens.add(gl);
+  // dark inner barrel for depth behind the glass
+  const inner = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.66, 0.5, 40), dark); inner.rotation.x = Math.PI / 2; inner.position.z = 1.4; lens.add(inner);
+  // rubber focus ring around the barrel
+  const focus = new THREE.Mesh(new THREE.CylinderGeometry(0.96, 0.96, 0.34, 56), rubber); focus.rotation.x = Math.PI / 2; focus.position.z = 0.85; lens.add(focus);
+  // lens hood at the front
+  const hood = new THREE.Mesh(new THREE.CylinderGeometry(0.99, 0.92, 0.36, 56, 1, true), dark); hood.rotation.x = Math.PI / 2; hood.position.z = 1.82; lens.add(hood);
   g.add(lens);
   return g;
 }
