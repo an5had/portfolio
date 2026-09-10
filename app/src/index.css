@@ -126,6 +126,20 @@ img { display: block; max-width: 100%; }
   max-width: 100%; line-height: 1.45; }
 .hero-screen .hero-foot { margin-top: calc(var(--sw) * 0.042); font-size: calc(var(--sw) * 0.027); }
 
+/* Portrait / narrow: the iPad's screen is cropped off the edges, so the copy
+   detaches into a readable panel near the bottom instead of being clipped. */
+.hero-stage .hero-screen.is-detached {
+  left: 50%; right: auto; transform: translateX(-50%);
+  top: auto; bottom: clamp(24px, 7vh, 72px);
+  width: min(560px, 90vw); height: auto;
+  border-radius: 20px;
+  padding: clamp(18px, 5vw, 26px) 0;
+  background: rgba(9, 11, 15, 0.86); }
+.hero-screen.is-detached .hero-screen-inner { padding: 0 clamp(18px, 5vw, 28px); }
+.hero-screen.is-detached .hero-kicker { font-size: clamp(10px, 2.9vw, 12px); margin-bottom: 0.9rem; }
+.hero-screen.is-detached .hero-title { font-size: clamp(28px, 8.6vw, 44px); line-height: 1.03; }
+.hero-screen.is-detached .hero-sub { font-size: clamp(13px, 3.7vw, 16px); margin-top: 0.9rem; }
+
 /* sequence preload loader */
 .hero-loader { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #06070a; transition: opacity 0.7s ease, visibility 0.7s; }
 .hero-loader.is-done { opacity: 0; visibility: hidden; }

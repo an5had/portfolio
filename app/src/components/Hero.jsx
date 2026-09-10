@@ -4,7 +4,7 @@
    revealed, reveals a circular text ring around it, then scrubs the rest of the
    clip and finally reveals the nav bar and the hero titles.
    Timeline lives in heroMap.js so scene and overlays stay in lockstep. */
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import HeroSequenceScene from './hero/HeroSequenceScene.jsx';
 import HeroProps from './hero/HeroProps.jsx';
 import HeroCar from './hero/HeroCar.jsx';
@@ -24,6 +24,37 @@ export default function Hero() {
   const progressRef = useRef(0);
 
   const { imagesRef, progress, ready } = useFrameSequence();
+
+  /* Portrait phones/tablets crop the frame hard (cover-fit), so the iPad's screen
+     runs off the edges and the props sit outside the viewport entirely. When the
+     screen rect can't fit, fall back: detach the copy into a readable panel and
+     drop the props/car rather than leaving them off-screen. Driven by real
+     geometry, not a width breakpoint, so a narrow desktop window works too. */
+  const [compact, setCompact] = useState(false);
+  const [showProps, setShowProps] = useState(true);
+  const compactRef = useRef(false);
+  useEffect(() => {
+    const check = () => {
+      const sw = window.innerWidth, sh = window.innerHeight;
+      const r = coverRect(HERO.screen, sw, sh);
+      const fits = r.x >= 4 && r.x + r.w <= sw - 4 && r.w >= 380;
+      compactRef.current = !fits;
+      setCompact(!fits);
+
+      // The props and the car live out at roughly x 0.17–0.87 of the frame.
+      // Portrait crops the sides away, so only mount them when that span is
+      // genuinely on screen — otherwise they'd load and animate out of view.
+      const scale = Math.max(sw / HERO.videoW, sh / HERO.videoH);
+      const dw = HERO.videoW * scale;
+      const offX = (sw - dw) / 2;
+      setShowProps(-offX / dw <= 0.17 && (sw - offX) / dw >= 0.87);
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(document.documentElement);
+    window.addEventListener('resize', check);
+    return () => { ro.disconnect(); window.removeEventListener('resize', check); };
+  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -46,11 +77,15 @@ export default function Hero() {
         ringRef.current.style.opacity = ring.toFixed(3);
         ringRef.current.style.transform = `scale(${(0.78 + 0.22 * ring).toFixed(3)})`;
       }
-      // keep the ring glued to the sticky's on-screen position (cover-fit aware)
+      // keep the ring glued to the sticky's on-screen position (cover-fit aware),
+      // and scale it with the frame so it encircles the sticky on every device
       if (ringWrapRef.current && ring > 0.001) {
-        const pt = coverPoint(HERO.stickyVX, HERO.stickyVY, window.innerWidth, window.innerHeight);
+        const sw = window.innerWidth, sh = window.innerHeight;
+        const dw = HERO.videoW * Math.max(sw / HERO.videoW, sh / HERO.videoH);
+        const pt = coverPoint(HERO.stickyVX, HERO.stickyVY, sw, sh);
         ringWrapRef.current.style.left = `${pt.x}px`;
         ringWrapRef.current.style.top = `${pt.y}px`;
+        ringWrapRef.current.style.width = `${Math.min(0.28 * dw, 0.92 * sw)}px`;
       }
 
       // desk props settle in once the mat is established, then stay put
@@ -62,19 +97,31 @@ export default function Hero() {
 
       // nav + titles reveal at the end
       const rev = remap(p, HERO.revealStart, HERO.revealEnd, 0, 1);
-      // gentle only — the copy has its own panel now, so don't crush the footage
-      if (scrimRef.current) scrimRef.current.style.opacity = (rev * 0.38).toFixed(3);
-      // Lock the copy panel onto the iPad's screen. Driven by the 4 measured
-      // corners, so size, position and radius all follow from the cover-fit map.
+      // gentle on desktop (the copy has its own panel); stronger when detached,
+      // because then the copy sits directly over the footage
+      if (scrimRef.current) {
+        scrimRef.current.style.opacity = (rev * (compactRef.current ? 0.8 : 0.38)).toFixed(3);
+      }
+
       if (titlesRef.current) {
-        const r = coverRect(HERO.screen, window.innerWidth, window.innerHeight);
-        const s = titlesRef.current.style;
-        s.left = `${r.x}px`;
-        s.top = `${r.y}px`;
-        s.width = `${r.w}px`;
-        s.height = `${r.h}px`;
-        s.borderRadius = `${r.radius}px`;
-        s.setProperty('--sw', `${r.w}px`);   // type scales with the screen
+        const el = titlesRef.current;
+        const s = el.style;
+        const sw = window.innerWidth, sh = window.innerHeight;
+        if (compactRef.current) {
+          // detached: let CSS lay it out as a readable bottom panel
+          el.classList.add('is-detached');
+          s.left = ''; s.top = ''; s.width = ''; s.height = ''; s.borderRadius = '';
+        } else {
+          // locked onto the iPad's screen, from the 4 measured corners
+          el.classList.remove('is-detached');
+          const r = coverRect(HERO.screen, sw, sh);
+          s.left = `${r.x}px`;
+          s.top = `${r.y}px`;
+          s.width = `${r.w}px`;
+          s.height = `${r.h}px`;
+          s.borderRadius = `${r.radius}px`;
+          s.setProperty('--sw', `${r.w}px`);   // type scales with the screen
+        }
         s.opacity = rev.toFixed(3);
         s.pointerEvents = rev > 0.5 ? 'auto' : 'none';
       }
@@ -118,10 +165,13 @@ export default function Hero() {
         <div className="hero-vignette" ref={scrimRef} />
 
         {/* draggable LEGO props sitting on the desk */}
-        <div className="hero-props" ref={propsRef}>
-          <HeroProps />
-          <HeroCar progressRef={progressRef} />
-        </div>
+        {/* props + car only where the frame is wide enough to actually show them */}
+        {showProps && (
+          <div className="hero-props" ref={propsRef}>
+            <HeroProps />
+            <HeroCar progressRef={progressRef} />
+          </div>
+        )}
 
         {/* circular text ring, centred over the "I'm Anshad" sticky */}
         <div className="hero-ring-wrap" ref={ringWrapRef} style={{ left: '51%', top: '62%' }}>
