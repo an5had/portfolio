@@ -1,0 +1,51 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   METAPHOR: a designer's backlit LIGHT TABLE glowing inside a dark studio.
+   Dark/cinematic (per profile.md) + a warm backlit surface where the work — 35mm
+   slides / transparencies — sits. Accent is Anshad's résumé orange for continuity.
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* the dark studio (the room / bezel) */
+  --studio:      #0d0f12;
+  --studio-2:    #14171c;
+  --bezel:       #08090b;
+
+  /* the backlit table surface */
+  --table:       #f3efe4;   /* warm frosted glass, lit from behind */
+  --table-glow:  #fffdf5;
+  --table-edge:  #3a3f47;   /* the metal frame around the light box */
+
+  /* the work: slide mounts + film */
+  --mount:       #101317;   /* black 35mm slide mount */
+  --mount-2:     #e9e6dc;   /* cardboard mount alt */
+  --film-base:   #e8842b;   /* the warm orange film-rebate edge */
+  --chinagraph:  #f4c518;   /* grease-pencil mark yellow */
+
+  /* type + accent */
+  --ink:         #15171c;   /* text on the lit table */
+  --paper:       #eceadf;   /* text on the dark studio */
+  --muted:       #8a9098;
+  --accent:      #e8492b;   /* résumé orange-red */
+  --accent-soft: #fbede9;
+
+  /* the "device" frame */
+  --screen-r:  28px;
+  --pill-lip:  10px;
+  --fillet:    10px;
+
+  /* comp space */
+  --comp-w: 1440; --comp-h: 900;
+  --comp-scale: min(100vw / var(--comp-w), 100vh / var(--comp-h));
+
+  /* z-index layers */
+  --z-stage: 0; --z-main: 10; --z-props: 20;
+  --z-loader: 30; --z-stickers: 40; --z-pill: 50; --z-nudge: 60;
+
+  /* type roles */
+  --font-body:  'Inter', system-ui, -apple-system, sans-serif;   /* editorial sans */
+  --font-mono:  ui-monospace, 'SF Mono', 'Roboto Mono', monospace; /* frame numbers, rebate */
+  --font-hand:  'Nanum Pen Script', 'Bradley Hand', cursive;      /* chinagraph annotations */
+
+  /* rhythm */
+  --pad-x: clamp(20px, 6vw, 120px);
+  --nav-safe: calc(72px + env(safe-area-inset-bottom, 0px));
+}

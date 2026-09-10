@@ -61,7 +61,84 @@ img { display: block; max-width: 100%; }
 /* hero */
 .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; padding: 0 clamp(20px, 5vw, 56px) clamp(40px, 7vh, 80px); overflow: hidden; }
 .hero-canvas { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 0; }
-.hero-vignette { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(120% 90% at 72% 32%, transparent 38%, rgba(0,0,0,0.55) 100%); }
+/* The clip is shown ungraded. This scrim is driven by the reveal phase only, so
+   the footage stays bright until the titles actually need contrast behind them. */
+.hero-vignette { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
+  background:
+    linear-gradient(to right, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.42) 34%, rgba(0,0,0,0) 62%),
+    linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.28) 36%, transparent 60%); }
+
+/* ── scrollytelling hero ───────────────────────────────────────────────── */
+.hero-scroll { position: relative; }
+.hero-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #000; }
+.hero-stage .hero-gl, .hero-stage canvas { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }
+
+/* draggable props on the desk */
+.hero-props { position: absolute; inset: 0; z-index: 2; opacity: 0; }
+.hero-prop { position: absolute; transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+  cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
+  filter: drop-shadow(0 16px 24px rgba(0,0,0,0.55));
+  transition: filter 0.2s ease, transform 0.3s ease, opacity 0.4s ease; will-change: left, top; }
+.hero-prop img { width: 100%; height: auto; display: block; pointer-events: none; -webkit-user-drag: none; }
+.hero-prop:hover { transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1.03); }
+.hero-prop.is-dragging { cursor: grabbing; z-index: 6;
+  filter: drop-shadow(0 34px 46px rgba(0,0,0,0.65));
+  transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1.06); transition: none; }
+
+/* toy car doing laps across the mat */
+.hero-car { position: absolute; z-index: 4; opacity: 0; pointer-events: none;
+  will-change: left, top, transform, opacity;
+  filter: drop-shadow(0 10px 14px rgba(0,0,0,0.55)); }
+.hero-car img { width: 100%; height: auto; display: block; }
+
+/* a prop the car has run over */
+.hero-prop.is-crushed {
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+  transform: translate(-50%, -50%) rotate(calc(var(--rot, 0deg) + 18deg)) scale(0.08) !important;
+  opacity: 0 !important; pointer-events: none !important; }
+
+/* circular text ring around the "I'm Anshad" sticky */
+.hero-ring-wrap { position: absolute; z-index: 2; width: clamp(240px, 30vw, 430px); aspect-ratio: 1 / 1; transform: translate(-50%, -50%); pointer-events: none; }
+.hero-ring { position: absolute; inset: 0; opacity: 0; transform: scale(0.78); transform-origin: 50% 50%; will-change: transform, opacity; filter: drop-shadow(0 2px 10px rgba(0,0,0,0.5)); }
+.hero-ring-svg { width: 100%; height: 100%; animation: heroRingSpin 20s linear infinite; transform-origin: 50% 50%; }
+.hero-ring-text { fill: #fff; font-family: var(--sans, system-ui); font-size: 15px; font-weight: 600; letter-spacing: 2.5px; }
+@keyframes heroRingSpin { to { transform: rotate(360deg); } }
+
+/* scroll hint (start only) */
+.hero-hint { position: absolute; left: 50%; bottom: 42px; transform: translateX(-50%); z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 8px; color: #fff; font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; transition: opacity 0.5s ease; text-shadow: 0 2px 12px rgba(0,0,0,0.6); }
+.hero-hint i { width: 1px; height: 34px; background: linear-gradient(#fff, transparent); animation: heroHint 1.6s ease-in-out infinite; }
+@keyframes heroHint { 0%, 100% { opacity: 0.3; transform: scaleY(0.6); } 50% { opacity: 1; transform: scaleY(1); } }
+
+/* The end copy lives INSIDE the iPad's screen on the frozen final frame.
+   Position/size/radius come from the 4 measured corners (set in JS); everything
+   here scales off --sw (the screen's pixel width) so type fits at any viewport.
+   .hero-stage prefix beats `.hero-inner { position: relative }` declared later. */
+.hero-stage .hero-screen { position: absolute; z-index: 3; opacity: 0; overflow: hidden;
+  display: flex; align-items: center;
+  background: rgba(9, 11, 15, 0.90);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.09), 0 24px 60px rgba(0,0,0,0.45); }
+.hero-screen-inner { width: 100%; padding: 0 calc(var(--sw) * 0.072); }
+.hero-screen .hero-kicker { font-size: calc(var(--sw) * 0.029); letter-spacing: 0.26em;
+  margin-bottom: calc(var(--sw) * 0.030); }
+.hero-screen .hero-title { font-size: calc(var(--sw) * 0.088); line-height: 1.0; letter-spacing: -0.03em; }
+.hero-screen .hero-sub { font-size: calc(var(--sw) * 0.0335); margin-top: calc(var(--sw) * 0.038);
+  max-width: 100%; line-height: 1.45; }
+.hero-screen .hero-foot { margin-top: calc(var(--sw) * 0.042); font-size: calc(var(--sw) * 0.027); }
+
+/* sequence preload loader */
+.hero-loader { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #06070a; transition: opacity 0.7s ease, visibility 0.7s; }
+.hero-loader.is-done { opacity: 0; visibility: hidden; }
+.hero-loader-mark { font-size: clamp(22px, 3vw, 34px); font-weight: 600; letter-spacing: -0.02em; color: var(--fg, #f4f4f2); }
+.hero-loader-pct { font-size: 12px; letter-spacing: 0.28em; color: var(--muted, #8a9098); font-variant-numeric: tabular-nums; }
+
+/* nav bar stays hidden until the hero reveals it */
+.nav { transition: opacity 0.6s ease, transform 0.6s ease; }
+html[data-hero="lock"] .nav { opacity: 0; transform: translateY(-110%); pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ring-svg, .hero-hint i { animation: none; }
+}
 .hero-inner { position: relative; z-index: 2; width: min(1240px, 90vw); margin: 0 auto; }
 .hero-kicker { font-size: clamp(12px, 1.2vw, 15px); letter-spacing: 0.32em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.4rem; }
 .hero-title { font-weight: 300; font-size: clamp(44px, 9vw, 148px); line-height: 0.94; letter-spacing: -0.05em; }
@@ -543,5 +620,18 @@ img { display: block; max-width: 100%; }
   .cs-lock-title { font-size: 26px; }
   .cs-lock-form { flex-direction: column; }
 }
+
+/* immersive room hero (hidden /lab) */
+.lab-active { background: #1a120c; }
+.lab-stage { position: fixed; inset: 0; z-index: 1; }
+.lab-stage canvas { display: block; width: 100% !important; height: 100% !important; }
+.lab-spacer { height: 360vh; }
+.lab-vignette { position: fixed; inset: 0; z-index: 2; pointer-events: none; background: radial-gradient(120% 100% at 50% 42%, transparent 45%, rgba(10, 6, 3, 0.6) 100%); }
+.lab-title { position: fixed; left: clamp(22px, 6vw, 90px); bottom: clamp(40px, 9vh, 90px); z-index: 3; pointer-events: none; transition: opacity 0.3s ease; }
+.lab-kicker { font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: rgba(255, 233, 200, 0.75); margin: 0 0 14px; }
+.lab-title h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 7vw, 92px); line-height: 1.0; letter-spacing: -0.02em; color: #fff4e2; margin: 0; text-shadow: 0 4px 40px rgba(0, 0, 0, 0.5); }
+.lab-scrollcue { display: inline-block; margin-top: 22px; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 230, 195, 0.7); animation: labbob 2s var(--ease) infinite; }
+@keyframes labbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+.lab-fade { position: fixed; inset: 0; z-index: 4; pointer-events: none; background: radial-gradient(circle at 50% 50%, #fffaf0 0%, #fdf3df 60%, #fff 100%); }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

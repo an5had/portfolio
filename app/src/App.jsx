@@ -12,6 +12,7 @@ import ArticlesPage from './pages/ArticlesPage.jsx';
 import GalleryPage from './pages/GalleryPage.jsx';
 import CertificatePage from './pages/CertificatePage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
+import LabPage from './pages/LabPage.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 function ScrollManager() {
@@ -23,12 +24,13 @@ function ScrollManager() {
   return null;
 }
 
-export default function App() {
-  useSmoothScroll();
+function Layout() {
+  const { pathname } = useLocation();
+  const immersive = pathname === '/lab';
   return (
-    <BrowserRouter>
+    <>
       <Cursor />
-      <Nav />
+      {!immersive && <Nav />}
       <ScrollManager />
       <main>
         <Routes>
@@ -40,10 +42,20 @@ export default function App() {
           <Route path="/gallery" element={<GalleryPage />} />
           <Route path="/certificate" element={<CertificatePage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/lab" element={<LabPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      <Footer />
+      {!immersive && <Footer />}
+    </>
+  );
+}
+
+export default function App() {
+  useSmoothScroll();
+  return (
+    <BrowserRouter>
+      <Layout />
     </BrowserRouter>
   );
 }
