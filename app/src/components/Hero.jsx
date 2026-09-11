@@ -5,6 +5,7 @@
    clip and finally reveals the nav bar and the hero titles.
    Timeline lives in heroMap.js so scene and overlays stay in lockstep. */
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import HeroSequenceScene from './hero/HeroSequenceScene.jsx';
 import HeroProps from './hero/HeroProps.jsx';
 import HeroCar from './hero/HeroCar.jsx';
@@ -22,6 +23,7 @@ export default function Hero() {
   const propsRef = useRef(null);
   const scrimRef = useRef(null);
   const hintRef = useRef(null);
+  const pillFillRef = useRef(null);
   const loaderRef = useRef(null);
   const progressRef = useRef(0);
 
@@ -154,9 +156,14 @@ export default function Hero() {
         s.opacity = rev.toFixed(3);
         s.pointerEvents = rev > 0.5 ? 'auto' : 'none';
       }
-      root.dataset.hero = p >= HERO.revealStart ? 'revealed' : 'lock';
 
-      if (hintRef.current) hintRef.current.style.opacity = (p < 0.04 ? 1 : 0).toFixed(2);
+      // scroll pill: fills with hero progress, then gets out of the way as the end copy arrives
+      // (on mobile that copy panel sits at the bottom, right where the pill is)
+      if (hintRef.current) {
+        const out = remap(p, HERO.revealStart - 0.06, HERO.revealStart, 0, 1);
+        hintRef.current.style.opacity = (1 - out).toFixed(3);
+        if (pillFillRef.current) pillFillRef.current.style.transform = `scaleX(${clamp(p / HERO.revealStart, 0, 1).toFixed(3)})`;
+      }
 
       raf = requestAnimationFrame(frame);
     };
@@ -209,8 +216,21 @@ export default function Hero() {
           <RingText ref={ringRef} />
         </div>
 
-        {/* scroll hint (start only) */}
-        <div className="hero-hint" ref={hintRef} aria-hidden="true"><span>Scroll</span><i /></div>
+        {/* Scroll pill — portalled to <body> and position:fixed on purpose. Inside the stage it
+            can't work: the stage has a transform (so "fixed" acts like "absolute") and is 100vh,
+            which on iOS is the LARGE viewport, putting its bottom under Safari's toolbar. A
+            body-level fixed element anchored to the bottom rides the dynamic viewport instead:
+            above the toolbar at rest, sliding down as Safari collapses it on scroll. */}
+        {createPortal(
+          <div className="scroll-pill" ref={hintRef} aria-hidden="true">
+            <svg className="scroll-pill-chevron" viewBox="0 0 12 12" fill="none">
+              <path d="M3 4.5 6 7.5 9 4.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="scroll-pill-label">Scroll</span>
+            <span className="scroll-pill-track"><i ref={pillFillRef} /></span>
+          </div>,
+          document.body,
+        )}
 
         {/* the frozen frame's iPad screen becomes the panel the end copy lives in */}
         <div className="hero-screen" ref={titlesRef}>
