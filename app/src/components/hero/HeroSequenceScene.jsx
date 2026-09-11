@@ -1,8 +1,13 @@
 /* The hero clip rendered through Three.js as a scrubbable image sequence.
-   Scroll progress picks a frame; the best loaded version of it (display tier, else the lq preview,
-   else the nearest preview frame) is uploaded to ONE texture — swapping the source, never
-   allocating a texture per frame. It re-uploads when the frame changes OR when a sharper version
-   of the current frame arrives, so the hero sharpens in place as the high tier streams in. */
+   Scroll progress picks a frame; the best loaded version of it is drawn.
+
+   TWO textures, one per size — never one texture fed images of different sizes. On WebGL2,
+   three.js allocates IMMUTABLE storage (texStorage2D) at the first upload's dimensions and later
+   uploads use texSubImage2D into that storage. Feeding a 1920px frame into a texture that was
+   first allocated for a 640px preview fails silently (INVALID_VALUE) — the picture freezes on
+   the last preview frame once the high tier has streamed in. So: the preview texture only ever
+   receives preview frames, the display texture only ever receives display-tier frames, and the
+   shader samples whichever holds the best version of the current frame. */
 import { useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ScreenQuad } from '@react-three/drei';
@@ -29,45 +34,63 @@ const fragmentShader = /* glsl */`
   }
 `;
 
-function bestImage(low, high, idx) {
-  if (high[idx]) return high[idx];
-  if (low[idx]) return low[idx];
+function makeTexture() {
+  const t = new THREE.Texture();
+  // Left in linear (no sRGB decode) on purpose. Paired with <Canvas linear flat>
+  // this is a pure passthrough blit, so the frames render byte-identical to the
+  // source instead of being darkened by a colour-space round-trip.
+  t.minFilter = THREE.LinearFilter;
+  t.magFilter = THREE.LinearFilter;
+  t.generateMipmaps = false;
+  return t;
+}
+
+const usable = (img) => img && img.complete && img.naturalWidth > 0;
+
+function nearestPreview(low, idx) {
+  if (usable(low[idx])) return low[idx];
   for (let d = 1; d < low.length; d++) {          // still streaming: nearest preview frame
-    if (low[idx - d]) return low[idx - d];
-    if (low[idx + d]) return low[idx + d];
+    if (usable(low[idx - d])) return low[idx - d];
+    if (usable(low[idx + d])) return low[idx + d];
   }
   return null;
 }
 
 function SequenceQuad({ lowRef, highRef, progressRef }) {
   const matRef = useRef();
-  const lastImg = useRef(null);
+  const shown = useRef({ low: null, high: null });
   const { size } = useThree();
 
-  const texture = useMemo(() => {
-    const t = new THREE.Texture();
-    // Left in linear (no sRGB decode) on purpose. Paired with <Canvas linear flat>
-    // this is a pure passthrough blit, so the frames render byte-identical to the
-    // source instead of being darkened by a colour-space round-trip.
-    t.minFilter = THREE.LinearFilter;
-    t.magFilter = THREE.LinearFilter;
-    t.generateMipmaps = false;
-    return t;
-  }, []);
+  const lowTex = useMemo(makeTexture, []);
+  const highTex = useMemo(makeTexture, []);
 
   const uniforms = useMemo(() => ({
-    uTex: { value: texture },
+    uTex: { value: lowTex },
     uVideo: { value: new THREE.Vector2(HERO.videoW, HERO.videoH) },
     uScreen: { value: new THREE.Vector2(1, 1) },
-  }), [texture]);
+  }), [lowTex]);
 
   useFrame(() => {
     const idx = frameForProgress(progressRef.current || 0);
-    const img = bestImage(lowRef.current, highRef.current, idx);
-    if (img && img !== lastImg.current && img.complete && img.naturalWidth) {
-      texture.image = img;
-      texture.needsUpdate = true;          // upload only when the source actually changes
-      lastImg.current = img;
+    const hi = highRef.current[idx];
+
+    if (usable(hi)) {
+      if (hi !== shown.current.high) {              // upload only when the source changes
+        highTex.image = hi;
+        highTex.needsUpdate = true;
+        shown.current.high = hi;
+      }
+      uniforms.uTex.value = highTex;
+    } else {
+      const lo = nearestPreview(lowRef.current, idx);
+      if (lo) {
+        if (lo !== shown.current.low) {
+          lowTex.image = lo;
+          lowTex.needsUpdate = true;
+          shown.current.low = lo;
+        }
+        uniforms.uTex.value = lowTex;
+      }
     }
     if (matRef.current) matRef.current.uniforms.uScreen.value.set(size.width, size.height);
   });
