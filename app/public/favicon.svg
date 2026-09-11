@@ -1,8 +1,1 @@
-<svg width="262" height="261" viewBox="0 0 262 261" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="262" height="261" rx="60" fill="#FF0000"/>
-<path d="M103.711 54H138.605L80.8947 207H46L103.711 54Z" fill="white"/>
-<path d="M91.6318 147.947L91.6318 113.053L199 113.053L199 147.947L91.6318 147.947Z" fill="white"/>
-<path d="M108.632 207L121.784 172.105L199 172.105L199 207L108.632 207Z" fill="white"/>
-<path d="M199 207L163.211 207L163.211 113.053L199 113.053L199 207Z" fill="white"/>
-<path d="M166.342 54L153.18 88.8945H139.053V54H166.342Z" fill="white"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="262" height="261" fill="none" viewBox="0 0 262 261"><rect width="262" height="261" fill="red" rx="60"/><path fill="#fff" d="M103.711 54H138.605L80.8947 207H46L103.711 54Z"/><path fill="#fff" d="M91.6318 147.947L91.6318 113.053L199 113.053L199 147.947L91.6318 147.947Z"/><path fill="#fff" d="M108.632 207L121.784 172.105L199 172.105L199 207L108.632 207Z"/><path fill="#fff" d="M199 207L163.211 207L163.211 113.053L199 113.053L199 207Z"/><path fill="#fff" d="M166.342 54L153.18 88.8945H139.053V54H166.342Z"/></svg>
