@@ -85,7 +85,7 @@ export default function Explorations({ heading = true }) {
 
               <FigItem className="fig-cursor" constraints={canvas} x={chipX(0.55)} y={452}>
                 <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
-                  <path d="M4 3 L18 11 L11 12 L8 19 Z" fill="#ff5630" stroke="#fff" strokeWidth="1" strokeLinejoin="round" />
+                  <path d="M4 3 L18 11 L11 12 L8 19 Z" style={{ fill: 'var(--accent)' }} stroke="#fff" strokeWidth="1" strokeLinejoin="round" />
                 </svg>
                 <span className="fig-cursor-name">anshad</span>
               </FigItem>

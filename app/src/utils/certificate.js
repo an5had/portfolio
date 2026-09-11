@@ -62,7 +62,13 @@ export function downloadDataUrl(dataUrl, filename) {
 /* ---------- compose the white-mat print ---------- */
 export async function composePrint(photoSrc, { qrDataUrl, certId = 'PREVIEW', email = '', date = '' } = {}) {
   const img = await loadImage(photoSrc);
-  if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
+  if (document.fonts && document.fonts.ready) {
+    // canvas text only uses a font that's already loaded — fetch the two faces the certificate draws with
+    try {
+      await Promise.all(['600 32px "Google Sans Flex"', 'italic 400 80px Newsreader'].map((f) => document.fonts.load(f)));
+      await document.fonts.ready;
+    } catch (e) {}
+  }
 
   const W = 2400, H = 1640;
   const padX = 150, padTop = 150, padBottom = 420;
@@ -89,7 +95,7 @@ export async function composePrint(photoSrc, { qrDataUrl, certId = 'PREVIEW', em
   ctx.save();
   ctx.textAlign = 'right';
   ctx.textBaseline = 'bottom';
-  ctx.font = '600 32px Inter, system-ui, sans-serif';
+  ctx.font = '600 32px "Google Sans Flex", system-ui, sans-serif';
   ctx.shadowColor = 'rgba(0,0,0,0.55)';
   ctx.shadowBlur = 8;
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
@@ -106,7 +112,7 @@ export async function composePrint(photoSrc, { qrDataUrl, certId = 'PREVIEW', em
     const q = await loadImage(qrDataUrl);
     ctx.drawImage(q, qrX, qrY, qrSize, qrSize);
     ctx.fillStyle = 'rgba(0,0,0,0.42)';
-    ctx.font = '500 22px Inter, system-ui, sans-serif';
+    ctx.font = '500 22px "Google Sans Flex", system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText('Scan to verify', qrX + qrSize / 2, qrY + qrSize + 12);
@@ -118,19 +124,19 @@ export async function composePrint(photoSrc, { qrDataUrl, certId = 'PREVIEW', em
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
   ctx.fillStyle = '#15171c';
-  ctx.font = 'italic 400 80px "Instrument Serif", Georgia, serif';
+  ctx.font = 'italic 400 80px Newsreader, Georgia, serif';
   ctx.fillText('Anshad', sx, y);
-  ctx.fillStyle = '#ff5630';
+  ctx.fillStyle = '#2f45e0';
   ctx.fillRect(sx, y + 24, 58, 4);
 
   y += 78;
   ctx.fillStyle = 'rgba(0,0,0,0.6)';
-  ctx.font = '600 26px Inter, system-ui, sans-serif';
+  ctx.font = '600 26px "Google Sans Flex", system-ui, sans-serif';
   ctx.fillText('Certificate of Authenticity', sx, y);
 
   y += 46;
   ctx.fillStyle = 'rgba(0,0,0,0.45)';
-  ctx.font = '400 25px Inter, system-ui, sans-serif';
+  ctx.font = '400 25px "Google Sans Flex", system-ui, sans-serif';
   ctx.fillText(`No. ${certId}`, sx, y);
   if (email) { y += 38; ctx.fillText(`Issued to ${email}`, sx, y); }
   if (date) { y += 38; ctx.fillText(date, sx, y); }

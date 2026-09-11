@@ -1,5 +1,43 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
+import { getTheme, setTheme, watchSystemTheme } from '../theme.js';
+
+/* Sun ⇄ moon. The icon shows the theme you'll switch TO. One circle morphs: small with rays = sun;
+   full size with a masked "bite" = crescent moon. */
+function ThemeToggle() {
+  const [theme, setT] = useState(getTheme);
+  useEffect(() => {
+    const on = (e) => setT(e.detail);
+    window.addEventListener('themechange', on);
+    const unwatch = watchSystemTheme();
+    return () => { window.removeEventListener('themechange', on); unwatch(); };
+  }, []);
+  const next = theme === 'light' ? 'dark' : 'light';
+  return (
+    <button
+      type="button"
+      className="theme-toggle"
+      data-cursor="link"
+      aria-label={`Switch to ${next} mode`}
+      title={`Switch to ${next} mode`}
+      onClick={(e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        setTheme(next, { x: r.left + r.width / 2, y: r.top + r.height / 2 });
+      }}
+    >
+      <svg className="tt-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <mask id="tt-mask">
+          <rect x="-4" y="-4" width="32" height="32" fill="#fff" />
+          <circle className="tt-bite" cx="17" cy="7" r="7" fill="#000" />
+        </mask>
+        <circle className="tt-core" cx="12" cy="12" r="8" fill="currentColor" mask="url(#tt-mask)" />
+        <g className="tt-rays" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+          <path d="M12 1.8v2.4M12 19.8v2.4M1.8 12h2.4M19.8 12h2.4M4.8 4.8l1.7 1.7M17.5 17.5l1.7 1.7M4.8 19.2l1.7-1.7M17.5 6.5l1.7-1.7" />
+        </g>
+      </svg>
+    </button>
+  );
+}
 
 const LINKS = [
   ['Work', '/works'],
@@ -52,6 +90,8 @@ export default function Nav() {
             </NavLink>
           ))}
         </nav>
+
+        <ThemeToggle />
 
         <Link to="/contact" className="nav-cta" data-cursor="link">Let’s talk</Link>
 

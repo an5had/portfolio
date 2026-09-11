@@ -14,6 +14,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { BOARD, CARDS, AUDIT, COL, R_CLEAN, paintCard } from './focusCards.js';
 import { phases, smooth, lerp, clamp01 } from './focusMath.js';
+import { getTheme } from '../../theme.js';
 
 const DEG = Math.PI / 180;
 const FOV = 26;
@@ -77,6 +78,7 @@ const SHADOW_FRAG = /* glsl */`
 
 const BACK_FRAG = /* glsl */`
   uniform vec2 uSize; uniform float uRadius, uOpacity, uGrid, uCoc, uPad, uCol, uGut;
+  uniform vec3 uBase; uniform float uEdge; uniform vec3 uAccent;
   varying vec2 vUv;
   ${SDF}
   void main() {
@@ -84,20 +86,20 @@ const BACK_FRAG = /* glsl */`
     float soft = 0.004 + uCoc * 0.17;
     float d = sdRound(p, uSize * 0.5 - soft, uRadius);
     float a = 1.0 - smoothstep(-soft, soft, d);
-    vec3 col = vec3(0.043, 0.049, 0.066) + (vUv.y - 0.5) * 0.018;
-    col += (1.0 - smoothstep(0.0, 0.016 + soft, abs(d + 0.012))) * 0.07;       // hairline bezel
+    vec3 col = uBase + (vUv.y - 0.5) * 0.018;
+    col += (1.0 - smoothstep(0.0, 0.016 + soft, abs(d + 0.012))) * uEdge;      // hairline bezel (lighter on dark, darker on light)
     // Figma-style layout grid: 12 translucent red columns
     float gx = p.x + uSize.x * 0.5 - uPad;
     float m = mod(gx, uCol + uGut);
     float colMask = smoothstep(0.0, 0.01, m) * (1.0 - smoothstep(uCol - 0.01, uCol, m));
     colMask *= step(0.0, gx) * step(gx, uSize.x - 2.0 * uPad);
     colMask *= 1.0 - smoothstep(uSize.y * 0.5 - uPad - 0.01, uSize.y * 0.5 - uPad, abs(p.y));
-    col = mix(col, vec3(1.0, 0.34, 0.19), colMask * uGrid * 0.13);
+    col = mix(col, uAccent, colMask * uGrid * 0.13);
     gl_FragColor = vec4(col, a * uOpacity);
   }
 `;
 
-function makeTexture(card, variant, ppu, aniso) {
+function makeTexture(card, variant, ppu, aniso, theme) {
   const dw = card.w * 100, dh = card.h * 100;
   let k = Math.max(1, ppu / 100);
   k = Math.min(k, 1800 / Math.max(dw, dh));
@@ -106,7 +108,7 @@ function makeTexture(card, variant, ppu, aniso) {
   cv.height = Math.round(dh * k);
   const ctx = cv.getContext('2d');
   ctx.scale(cv.width / dw, cv.height / dh);
-  paintCard(card.id, variant, ctx, dw, dh);
+  paintCard(card.id, variant, ctx, dw, dh, theme);
   const t = new THREE.CanvasTexture(cv);
   t.generateMipmaps = true;
   t.minFilter = THREE.LinearMipmapLinearFilter;
@@ -115,7 +117,8 @@ function makeTexture(card, variant, ppu, aniso) {
   return { tex: t, w: cv.width, h: cv.height };
 }
 
-function buildWorld(ppu, aniso) {
+function buildWorld(ppu, aniso, theme) {
+  const light = theme === 'light';
   const root = new THREE.Group();
   const board = new THREE.Group();
   root.add(board);
@@ -126,6 +129,10 @@ function buildWorld(ppu, aniso) {
     uniforms: {
       uSize: { value: new THREE.Vector2(BOARD.W, BOARD.H) }, uRadius: { value: BOARD.R }, uOpacity: { value: 0 },
       uGrid: { value: 0 }, uCoc: { value: 1 }, uPad: { value: BOARD.PAD }, uCol: { value: COL }, uGut: { value: BOARD.GUT },
+      // board surface: near-black app chrome in dark, warm stone (#f2efed) in light
+      uBase: { value: light ? new THREE.Vector3(0.949, 0.937, 0.929) : new THREE.Vector3(0.043, 0.049, 0.066) },
+      uEdge: { value: light ? -0.06 : 0.07 },
+      uAccent: { value: light ? new THREE.Vector3(0.184, 0.271, 0.878) : new THREE.Vector3(0.455, 0.525, 1.0) },
     },
   });
   const back = new THREE.Mesh(quad, backMat);
@@ -136,8 +143,8 @@ function buildWorld(ppu, aniso) {
   const textures = [];
   const byId = {};
   const items = CARDS.map((c, i) => {
-    const mess = makeTexture(c, 'mess', ppu, aniso);
-    const clean = makeTexture(c, 'clean', ppu, aniso);
+    const mess = makeTexture(c, 'mess', ppu, aniso, theme);
+    const clean = makeTexture(c, 'clean', ppu, aniso, theme);
     textures.push(mess.tex, clean.tex);
     const g = new THREE.Group();
     const spread = 0.3;
@@ -174,7 +181,8 @@ function buildWorld(ppu, aniso) {
     items.forEach((it) => { it.mat.dispose(); it.shadowMat.dispose(); });
     backMat.dispose(); quad.dispose();
   };
-  return { root, board, backMat, items, byId, dispose };
+  // drop shadows read heavier on a light page, so soften them there
+  return { root, board, backMat, items, byId, dispose, shadowK: light ? 0.45 : 1 };
 }
 
 /* Fit the finished board into the DOM slot: distance from the slot's size, centre via view offset. */
@@ -226,20 +234,36 @@ function World({ pRef, slotRef, auditRefs }) {
   const auditShown = useRef(true);
   const canHover = useRef(typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
 
+  // the board follows the site theme: repaint the textures + surface whenever it flips
+  const [theme, setThemeState] = useState(getTheme);
   useEffect(() => {
-    let dead = false, built = null;
+    const on = (e) => setThemeState(e.detail);
+    window.addEventListener('themechange', on);
+    return () => window.removeEventListener('themechange', on);
+  }, []);
+
+  useEffect(() => {
+    let dead = false;
     (async () => {
       try {
-        await Promise.all(['400', '500', '600'].map((w) => document.fonts.load(`${w} 16px Inter`)));
+        await Promise.all(['400', '500', '600'].map((w) => document.fonts.load(`${w} 16px "Google Sans Flex"`)));
       } catch { /* fall back to system fonts */ }
       if (dead) return;
       const slotW = slotRef.current?.w || 720;
       const ppu = (slotW / BOARD.W) * Math.min(2, window.devicePixelRatio || 1) * 1.25;
-      built = buildWorld(ppu, Math.min(8, gl.capabilities.getMaxAnisotropy()));
-      setWorld(built);
+      setWorld(buildWorld(ppu, Math.min(8, gl.capabilities.getMaxAnisotropy()), theme));
     })();
-    return () => { dead = true; built?.dispose(); };
-  }, [gl, slotRef]);
+    return () => { dead = true; };
+  }, [gl, slotRef, theme]);
+
+  // free a world only once its replacement is on screen, so a theme flip never shows a blank frame
+  const shown = useRef(null);
+  useEffect(() => {
+    const old = shown.current;
+    shown.current = world;
+    if (old && old !== world) old.dispose();
+  }, [world]);
+  useEffect(() => () => shown.current?.dispose(), []);
 
   useFrame((state, dt) => {
     if (!world) return;
@@ -307,7 +331,7 @@ function World({ pRef, slotRef, auditRefs }) {
       u.uSheen.value = sheen - (c.delay * 0.5);
       u.uHover.value = it.hover;
       const su = it.shadowMat.uniforms;
-      su.uOpacity.value = opacity * lerp(0.55, 0.3, si) * (1 - k * 0.4);
+      su.uOpacity.value = opacity * lerp(0.55, 0.3, si) * (1 - k * 0.4) * world.shadowK;
       su.uRadius.value = u.uRadius.value;
       su.uSpread.value = 0.18 + k * 0.12 + (1 - si) * 0.1;
     }

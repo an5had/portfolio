@@ -261,7 +261,7 @@ export default function Hero() {
             <p className="hero-kicker">Senior UX &amp; Product Designer</p>
             <h1 className="hero-title">
               <span className="line">I bring messy</span>
-              <span className="line">problems <em className="accent">into focus.</em></span>
+              <span className="line">problems into <em className="accent"><span className="swash">F</span>ocus.</em></span>
             </h1>
             <p className="hero-sub">
               5+ years of it, across enterprise dashboards, web and mobile apps and AI-powered

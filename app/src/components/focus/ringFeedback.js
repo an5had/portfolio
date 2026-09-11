@@ -107,7 +107,10 @@ export function ringFeedback(kind) {
     lastSound = now;
   }
 
-  // haptics
+  // haptics — browsers block vibrate() until the visitor has tapped/clicked the page (and log an
+  // error for every blocked call), so stay silent until there has been a real interaction
+  const activated = navigator.userActivation ? navigator.userActivation.hasBeenActive : true;
+  if (!activated) return;
   if (canVibrate) {
     if (kind === 'stop') { navigator.vibrate(14); lastBuzz = now; }
     else if (now - lastBuzz > 45) { navigator.vibrate(kind === 'major' ? 7 : 3); lastBuzz = now; }

@@ -61,7 +61,7 @@ export const AUDIT = [
 
 /* ───────────────────────────── painting ───────────────────────────── */
 
-const SANS = 'Inter, "Helvetica Neue", Arial, sans-serif';
+const SANS = '"Google Sans Flex", "Helvetica Neue", Arial, sans-serif';
 const SERIF = 'Georgia, "Times New Roman", serif';
 const MONO = 'ui-monospace, "SFMono-Regular", Consolas, Menlo, monospace';
 const IMPACT = 'Impact, "Arial Black", "Helvetica Neue", sans-serif';
@@ -69,10 +69,22 @@ const COMIC = '"Comic Sans MS", "Chalkboard SE", "Marker Felt", cursive';
 const ARIAL = 'Arial, Helvetica, sans-serif';
 const VERDANA = 'Verdana, Geneva, sans-serif';
 
-const C = {
+// the CLEAN dashboard follows the site theme; the MESS paint jobs are deliberately theme-less
+const C_DARK = {
   bg: '#15171d', nav: '#111318', line: 'rgba(255,255,255,0.075)', grid: 'rgba(255,255,255,0.055)',
-  text: '#eceef3', muted: '#8d92a1', dim: '#5f6472', accent: '#ff5630', up: '#6fd394',
+  text: '#eceef3', muted: '#8d92a1', dim: '#5f6472', accent: '#7486ff', accentRgb: '116,134,255', accent2: '#b9c1ff',
+  warnBg: 'rgba(255,138,106,0.14)', up: '#6fd394', upBg: 'rgba(111,211,148,0.12)',
+  soft: 'rgba(255,255,255,0.05)', soft2: 'rgba(255,255,255,0.08)', faint: 'rgba(255,255,255,0.32)',
+  tipBg: '#23262e', tipFg: '#eceef3', neutral: '#4b505c', warn: '#ff8a6a',
 };
+const C_LIGHT = {
+  bg: '#ffffff', nav: '#ffffff', line: 'rgba(38,36,36,0.09)', grid: 'rgba(38,36,36,0.07)',
+  text: '#262424', muted: '#7a7470', dim: '#aaa4a0', accent: '#2f45e0', accentRgb: '47,69,224', accent2: '#9aa6f5',
+  warnBg: 'rgba(224,70,31,0.1)', up: '#1e9a55', upBg: 'rgba(30,154,85,0.1)',
+  soft: 'rgba(38,36,36,0.045)', soft2: 'rgba(38,36,36,0.07)', faint: 'rgba(38,36,36,0.3)',
+  tipBg: '#262424', tipFg: '#fbfaf9', neutral: '#d9d4d0', warn: '#e0461f',
+};
+let C = C_DARK;
 
 function rrect(ctx, x, y, w, h, r) {
   r = Math.max(0, Math.min(r, w / 2, h / 2));
@@ -120,16 +132,16 @@ function navClean(ctx, w, h) {
   ['Overview', 'Reports', 'Accounts', 'Alerts'].forEach((t, i) => {
     ctx.font = `500 12.5px ${SANS}`;
     const tw = ctx.measureText(t).width;
-    if (i === 0) pill(ctx, x - 12, 14, tw + 24, 24, 'rgba(255,255,255,0.08)');
+    if (i === 0) pill(ctx, x - 12, 14, tw + 24, 24, C.soft2);
     txt(ctx, t, x, 30.5, `500 12.5px ${SANS}`, i === 0 ? C.text : C.muted);
     x += tw + 34;
   });
-  pill(ctx, w - 214, 13, 164, 26, 'rgba(255,255,255,0.05)');
+  pill(ctx, w - 214, 13, 164, 26, C.soft);
   ctx.strokeStyle = C.dim; ctx.lineWidth = 1.4;
   ctx.beginPath(); ctx.arc(w - 196, 25, 4.5, 0, Math.PI * 2); ctx.moveTo(w - 192.6, 28.4); ctx.lineTo(w - 189.5, 31.5); ctx.stroke();
   txt(ctx, 'Search', w - 182, 30.5, `400 12px ${SANS}`, C.dim);
   const g = ctx.createLinearGradient(w - 43, 13, w - 17, 39);
-  g.addColorStop(0, C.accent); g.addColorStop(1, '#ffb199');
+  g.addColorStop(0, C.accent); g.addColorStop(1, C.accent2);
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(w - 30, 26, 13, 0, Math.PI * 2); ctx.fill();
 }
 
@@ -139,13 +151,13 @@ function kpiClean({ label, value, delta, note, spark, bar }) {
     txt(ctx, label, 18, 30, `500 12px ${SANS}`, C.muted);
     txt(ctx, value, 18, 67, `600 29px ${SANS}`, C.text);
     if (bar != null) {
-      pill(ctx, 18, 82, w - 36, 5, 'rgba(255,255,255,0.07)');
+      pill(ctx, 18, 82, w - 36, 5, C.soft2);
       pill(ctx, 18, 82, (w - 36) * bar, 5, C.accent);
       txt(ctx, note, w - 18, 30, `500 11px ${SANS}`, C.dim, 'right');
     } else {
       ctx.font = `600 11px ${SANS}`;
       const dw = ctx.measureText(delta).width + 16;
-      pill(ctx, 18, 78, dw, 18, 'rgba(111,211,148,0.12)');
+      pill(ctx, 18, 78, dw, 18, C.upBg);
       txt(ctx, delta, 26, 91, `600 11px ${SANS}`, C.up);
       txt(ctx, note, 18 + dw + 8, 91, `400 11px ${SANS}`, C.dim);
     }
@@ -174,7 +186,7 @@ function lineClean(ctx, w, h) {
   txt(ctx, 'Last 12 months', 18, 45, `400 11px ${SANS}`, C.dim);
   ctx.fillStyle = C.accent; ctx.beginPath(); ctx.arc(w - 176, 26, 3.5, 0, Math.PI * 2); ctx.fill();
   txt(ctx, 'This year', w - 168, 30, `500 11px ${SANS}`, C.muted);
-  ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 1.4; ctx.setLineDash([3, 3]);
+  ctx.strokeStyle = C.faint; ctx.lineWidth = 1.4; ctx.setLineDash([3, 3]);
   ctx.beginPath(); ctx.moveTo(w - 96, 26); ctx.lineTo(w - 82, 26); ctx.stroke(); ctx.setLineDash([]);
   txt(ctx, 'Last year', w - 76, 30, `500 11px ${SANS}`, C.muted);
 
@@ -190,18 +202,18 @@ function lineClean(ctx, w, h) {
 
   const now = THIS_YEAR.map((v, i) => [x(i), y(v)]);
   const grad = ctx.createLinearGradient(0, T, 0, B);
-  grad.addColorStop(0, 'rgba(255,86,48,0.26)'); grad.addColorStop(1, 'rgba(255,86,48,0)');
+  grad.addColorStop(0, `rgba(${C.accentRgb},0.26)`); grad.addColorStop(1, `rgba(${C.accentRgb},0)`);
   ctx.beginPath(); curve(ctx, now); ctx.lineTo(R, B); ctx.lineTo(L, B); ctx.closePath();
   ctx.fillStyle = grad; ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
+  ctx.strokeStyle = C.faint; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
   ctx.beginPath(); curve(ctx, LAST_YEAR.map((v, i) => [x(i), y(v)])); ctx.stroke(); ctx.setLineDash([]);
   ctx.strokeStyle = C.accent; ctx.lineWidth = 2.2; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   ctx.beginPath(); curve(ctx, now); ctx.stroke();
   const e = now[now.length - 1];
-  ctx.fillStyle = 'rgba(255,86,48,0.22)'; ctx.beginPath(); ctx.arc(e[0], e[1], 8, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = `rgba(${C.accentRgb},0.22)`; ctx.beginPath(); ctx.arc(e[0], e[1], 8, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = C.accent; ctx.beginPath(); ctx.arc(e[0], e[1], 3.6, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = '#23262e'; rrect(ctx, e[0] - 58, e[1] - 32, 48, 21, 6); ctx.fill();
-  txt(ctx, '$6.1M', e[0] - 34, e[1] - 17.5, `600 11px ${SANS}`, C.text, 'center');
+  ctx.fillStyle = C.tipBg; rrect(ctx, e[0] - 58, e[1] - 32, 48, 21, 6); ctx.fill();
+  txt(ctx, '$6.1M', e[0] - 34, e[1] - 17.5, `600 11px ${SANS}`, C.tipFg, 'center');
 }
 
 const REGIONS = [['North America', 42], ['Europe', 24], ['Middle East', 16], ['Asia Pacific', 11], ['Other', 7]];
@@ -213,8 +225,8 @@ function barsClean(ctx, w, h) {
     const yy = 54 + i * 26;
     txt(ctx, name, 18, yy, `400 11.5px ${SANS}`, C.muted);
     txt(ctx, `${v}%`, w - 18, yy, `600 11.5px ${SANS}`, C.text, 'right');
-    pill(ctx, 18, yy + 7, w - 36, 6, 'rgba(255,255,255,0.05)');
-    pill(ctx, 18, yy + 7, Math.max(6, (w - 36) * (v / 42)), 6, `rgba(255,86,48,${alphas[i]})`);
+    pill(ctx, 18, yy + 7, w - 36, 6, C.soft);
+    pill(ctx, 18, yy + 7, Math.max(6, (w - 36) * (v / 42)), 6, `rgba(${C.accentRgb},${alphas[i]})`);
   });
 }
 
@@ -232,17 +244,17 @@ function tableClean(ctx, w, h) {
     const active = r[2] === 'Active';
     ctx.font = `600 10.5px ${SANS}`;
     const pw = ctx.measureText(r[2]).width + 16;
-    pill(ctx, cols[2], yy - 12.5, pw, 17, active ? 'rgba(111,211,148,0.12)' : 'rgba(255,86,48,0.14)');
-    txt(ctx, r[2], cols[2] + 8, yy - 0.5, `600 10.5px ${SANS}`, active ? C.up : '#ff8a6a');
+    pill(ctx, cols[2], yy - 12.5, pw, 17, active ? C.upBg : C.warnBg);
+    txt(ctx, r[2], cols[2] + 8, yy - 0.5, `600 10.5px ${SANS}`, active ? C.up : C.warn);
     txt(ctx, r[3], w - 18, yy, `600 12px ${SANS}`, C.text, 'right');
-    if (i < rows.length - 1) { ctx.fillStyle = 'rgba(255,255,255,0.045)'; ctx.fillRect(18, yy + 9, w - 36, 1); }
+    if (i < rows.length - 1) { ctx.fillStyle = C.soft; ctx.fillRect(18, yy + 9, w - 36, 1); }
   });
 }
 
 function donutClean(ctx, w, h) {
   base(ctx, w, h, C.bg, 12, C.line);
   txt(ctx, 'Accounts by tier', 18, 27, `600 12.5px ${SANS}`, C.text);
-  const segs = [[0.48, C.accent, 'Enterprise'], [0.34, '#ff9b80', 'Growth'], [0.18, '#4b505c', 'Starter']];
+  const segs = [[0.48, C.accent, 'Enterprise'], [0.34, C.accent2, 'Growth'], [0.18, C.neutral, 'Starter']];
   const cx = 56, cy = 72, r = 26;
   let a = -Math.PI / 2;
   ctx.lineWidth = 10; ctx.lineCap = 'butt';
@@ -258,7 +270,7 @@ function donutClean(ctx, w, h) {
   });
 }
 
-const blankClean = (fill) => (ctx, w, h) => base(ctx, w, h, fill, 12, C.line);
+const blankClean = (key) => (ctx, w, h) => base(ctx, w, h, C[key], 12, C.line);
 
 /* ── mess ── */
 
@@ -446,11 +458,12 @@ const MESS = {
   table: tableMess, donut: donutMess, xlsx: xlsxMess,
 };
 const CLEAN = {
-  nav: navClean, sidenav: blankClean(C.nav), 'kpi-rev': kpiRevClean, 'dup-rev-a': kpiRevClean, 'dup-rev-b': kpiRevClean,
+  nav: navClean, sidenav: blankClean('nav'), 'kpi-rev': kpiRevClean, 'dup-rev-a': kpiRevClean, 'dup-rev-b': kpiRevClean,
   'kpi-orders': kpiOrdersClean, 'kpi-ontime': kpiOntimeClean, 'chart-line': lineClean, 'chart-bars': barsClean,
-  table: tableClean, donut: donutClean, xlsx: blankClean(C.bg),
+  table: tableClean, donut: donutClean, xlsx: blankClean('bg'),
 };
 
-export function paintCard(id, variant, ctx, w, h) {
+export function paintCard(id, variant, ctx, w, h, theme = 'dark') {
+  C = theme === 'light' ? C_LIGHT : C_DARK;
   (variant === 'clean' ? CLEAN : MESS)[id](ctx, w, h);
 }

@@ -13,7 +13,21 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png?v=3" />
     <link rel="icon" href="/favicon.ico?v=3" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#08080a" />
+    <!-- Theme before first paint (no flash): the visitor's saved choice, else their device setting -->
+    <script>
+      (function () {
+        var t = 'dark';
+        try {
+          var s = localStorage.getItem('theme');
+          t = s === 'light' || s === 'dark' ? s : (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        } catch (e) {}
+        var r = document.documentElement;
+        r.setAttribute('data-theme', t);
+        r.style.colorScheme = t;
+        if (t === 'light') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fbfaf9');
+      })();
+    </script>
     <!-- Share thumbnail: scrapers (LinkedIn, WhatsApp, X, Slack) need an absolute URL -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://itsmyportfolio.com/" />
@@ -30,7 +44,9 @@
     <meta name="twitter:image" content="https://itsmyportfolio.com/og.png?v=3" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+    <!-- Type (after zero.university): Google Sans Flex for UI/body, Newsreader display serif for
+         headlines, DM Mono for labels. Caveat is self-hosted via @fontsource. -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Google+Sans+Flex:opsz,wght@6..144,300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Pinyon+Script&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="root"></div>

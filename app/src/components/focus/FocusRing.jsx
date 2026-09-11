@@ -55,7 +55,7 @@ const FocusRing = forwardRef(function FocusRing({ stops, onScrubStart, onScrub, 
       ctx.fillStyle = `rgba(226,229,236,${(major ? 0.55 : 0.3) * c * c})`;
       ctx.fillRect(x - 0.5 * c, 5, Math.max(0.6, c), major ? 7 : 4);
     }
-    ctx.font = `600 ${h < 60 ? 9.5 : 10.5}px Inter, system-ui, sans-serif`;
+    ctx.font = `500 ${h < 60 ? 9.5 : 10.5}px "DM Mono", ui-monospace, monospace`;
     ctx.textBaseline = 'alphabetic';
     const labelY = bandH - 5;
     const marks = [...stops.map((stop) => ({ s: stop.label, d: stop.at * THROW })), { s: '∞', d: THROW + 24 }];
@@ -64,13 +64,13 @@ const FocusRing = forwardRef(function FocusRing({ stops, onScrubStart, onScrub, 
       if (Math.abs(a) > 1.45) return;
       const x = cx + R * Math.sin(a), c = Math.cos(a);
       const near = 1 - Math.min(1, Math.abs(a) / (11 * DEG));
-      const sp = 1.9;
+      const sp = 1.2;
       ctx.save();
       ctx.translate(x, labelY);
       ctx.scale(Math.max(0.05, c), 1);
       const tw = spacedWidth(ctx, label, sp);
       ctx.globalAlpha = 0.2 + 0.8 * c * c;
-      ctx.fillStyle = near > 0.35 ? '#ff6a47' : '#c9ccd4';
+      ctx.fillStyle = near > 0.35 ? '#8b98ff' : '#c9ccd4';
       let lx = -tw / 2;
       for (const ch of label) { ctx.fillText(ch, lx, 0); lx += ctx.measureText(ch).width + sp; }
       ctx.restore();

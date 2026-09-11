@@ -30,6 +30,9 @@ export default function FocusSection() {
   const [active, setActive] = useState(0);
   const [live, setLive] = useState(false);
   const [touched, setTouched] = useState(false);
+  // latches on first view so the margin note draws in once, not every time the section re-enters
+  const seenRef = useRef(false);
+  if (live) seenRef.current = true;
 
   // where the finished board should sit, relative to the stage (the canvas fills the stage)
   useEffect(() => {
@@ -241,7 +244,7 @@ export default function FocusSection() {
   };
 
   return (
-    <section className="focus" id="intro" ref={sectionRef} aria-labelledby="focus-title">
+    <section className={`focus${seenRef.current ? ' is-live' : ''}`} id="intro" ref={sectionRef} aria-labelledby="focus-title">
       <div className="focus-stage" ref={stageRef}>
         <div className="focus-glow" aria-hidden="true" />
         <FocusScene live={live} pRef={pSmooth} slotRef={slotRect} auditRefs={auditRefs} />
@@ -260,7 +263,9 @@ export default function FocusSection() {
         <div className="focus-copy">
         <header className="focus-head">
           <p className="eyebrow">What I actually do</p>
-          <h2 id="focus-title" className="focus-title">Hand me the <em className="serif-accent">mess.</em></h2>
+          <h2 id="focus-title" className="focus-title">
+            Hand me the <em className="serif-accent has-note" data-note="the messier, the better"><span className="swash">M</span>ess.</em>
+          </h2>
         </header>
 
         <div className="focus-steps">
