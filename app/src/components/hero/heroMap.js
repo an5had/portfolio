@@ -4,7 +4,7 @@
 export const HERO = {
   trackVh: 460,          // total scroll track height (vh). scrollable = trackVh - 100.
   D: 10.04,              // video duration (seconds)
-  Tr: 2.4,               // frame 36 — "I'm Anshad" settled, crisp and readable
+  Tr: 2.25,              // frame 54 @24fps — "I'm Anshad" note settled and still; "Hey!" note already leaving
   videoW: 1920, videoH: 1080,
 
   // progress (0..1) breakpoints for the video timeline
@@ -19,13 +19,13 @@ export const HERO = {
   // nav bar + hero titles reveal band
   revealStart: 0.84, revealEnd: 0.98,
 
-  // the "I'm Anshad" sticky centre, as fractions of the RAW video frame (frame 36)
-  stickyVX: 0.50, stickyVY: 0.52,
+  // the "I'm Anshad" sticky centre, as fractions of the RAW video frame (tracked, still frames 24–54)
+  stickyVX: 0.509, stickyVY: 0.495,
 
-  /* The iPad's screen in the final (frozen) frame, in raw video-frame fractions.
-     Measured off frame 148; radius is a fraction of the video width. The end
-     titles are rendered inside this rect so they sit on the tablet's display. */
-  screen: { l: 0.2985, t: 0.2985, r: 0.6885, b: 0.7515, radius: 0.0141 },
+  /* The iPad's display in the final (frozen) frame, in raw video-frame fractions.
+     Measured off the lit blue display (frames 150–222 of the 4K render) and checked against the
+     black-screen frames; radius is a fraction of the video width. The end titles render in here. */
+  screen: { l: 0.3594, t: 0.3278, r: 0.6458, b: 0.6963, radius: 0.004 },
 
   // the explicit snap point the brief asks for (I'm Anshad fully revealed)
   snapAt: 0.34,
@@ -35,7 +35,10 @@ export const HERO = {
    accounting for object-fit: cover. Keeps the ring glued to the sticky on any
    viewport aspect. */
 /* Same cover-fit mapping for a rect given in video-frame fractions. Returns px
-   plus a scaled corner radius, so an overlay lands exactly on the iPad screen. */
+   plus a scaled corner radius, so an overlay lands exactly on the iPad screen.
+   sw/sh must be the STAGE's size — document.documentElement.clientWidth/Height — never
+   window.innerWidth: that includes the scrollbar, the canvas doesn't, and the ~15px gap shifts
+   every overlay right of the footage (ink off-centre on the notes, blue showing beside the panel). */
 export function coverRect(rect, sw, sh) {
   const scale = Math.max(sw / HERO.videoW, sh / HERO.videoH);
   const dw = HERO.videoW * scale, dh = HERO.videoH * scale;
@@ -56,19 +59,13 @@ export function coverPoint(vx, vy, sw, sh) {
   return { x: offX + vx * dw, y: offY + vy * dh };
 }
 
-/* The clip is shipped as an image sequence (not a video) for frame-exact scrub
-   control: no decoding, no dropped seeks, no keyframe roulette. 151 WebP frames
-   at 15fps. Two variants: full 1920×1080 (~80KB/frame, 12MB) and a 1280×720 set
-   for narrow screens (~51KB/frame, 7.5MB). Only one set is ever fetched. */
-export const FPS = 15;
-/* Ends at frame 148 (9.87s) — the moment the Apple Pencil is set back down and
-   still sharp. Frames 149–150 are motion-blurred as the hand leaves, so they are
-   cut from the sequence entirely rather than just skipped. */
-export const FRAME_COUNT = 149;
-export const FRAME_VARIANT =
-  typeof window !== 'undefined' && window.innerWidth <= 900 ? 'sm' : 'fhd';
-export const frameSrc = (i) =>
-  `/frames/${FRAME_VARIANT}/f_${String(i + 1).padStart(4, '0')}.webp`;
+/* The clip ships as an image sequence (not a video) for frame-exact scrub control: no decoding,
+   no dropped seeks. Native 24fps from the 4K render, as AVIF stills in resolution tiers — see
+   frameTiers.js (which tier a visitor gets) and useTieredSequence.js (progressive loading). */
+export const FPS = 24;
+/* Ends on frame 215 (8.96s) — the Apple Pencil set back down and at rest. Later frames (the
+   tablet screen switching off) are cut from the sequence entirely. */
+export const FRAME_COUNT = 216;
 
 export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 

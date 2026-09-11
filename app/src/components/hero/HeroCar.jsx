@@ -100,7 +100,7 @@ export default function HeroCar({ progressRef }) {
       }
       const t = Math.min(1, (now - start) / CROSS_MS);
       const u = dir > 0 ? t : 1 - t;
-      const sw = window.innerWidth, sh = window.innerHeight;
+      const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
       const scale = Math.max(sw / HERO.videoW, sh / HERO.videoH);
       const dw = HERO.videoW * scale;
 

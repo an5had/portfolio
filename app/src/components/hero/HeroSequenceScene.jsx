@@ -1,7 +1,8 @@
 /* The hero clip rendered through Three.js as a scrubbable image sequence.
-   Scroll progress picks a frame; the frame is uploaded to a single texture (one
-   texture, swapped source — never 151 textures, which would blow up GPU memory).
-   A small shader handles cover-fit, a soft vignette and faint film grain. */
+   Scroll progress picks a frame; the best loaded version of it (display tier, else the lq preview,
+   else the nearest preview frame) is uploaded to ONE texture — swapping the source, never
+   allocating a texture per frame. It re-uploads when the frame changes OR when a sharper version
+   of the current frame arrives, so the hero sharpens in place as the high tier streams in. */
 import { useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ScreenQuad } from '@react-three/drei';
@@ -28,9 +29,19 @@ const fragmentShader = /* glsl */`
   }
 `;
 
-function SequenceQuad({ imagesRef, progressRef }) {
+function bestImage(low, high, idx) {
+  if (high[idx]) return high[idx];
+  if (low[idx]) return low[idx];
+  for (let d = 1; d < low.length; d++) {          // still streaming: nearest preview frame
+    if (low[idx - d]) return low[idx - d];
+    if (low[idx + d]) return low[idx + d];
+  }
+  return null;
+}
+
+function SequenceQuad({ lowRef, highRef, progressRef }) {
   const matRef = useRef();
-  const lastFrame = useRef(-1);
+  const lastImg = useRef(null);
   const { size } = useThree();
 
   const texture = useMemo(() => {
@@ -52,13 +63,11 @@ function SequenceQuad({ imagesRef, progressRef }) {
 
   useFrame(() => {
     const idx = frameForProgress(progressRef.current || 0);
-    if (idx !== lastFrame.current) {
-      const img = imagesRef.current[idx];
-      if (img && img.complete && img.naturalWidth) {
-        texture.image = img;
-        texture.needsUpdate = true;       // upload only when the frame changes
-        lastFrame.current = idx;
-      }
+    const img = bestImage(lowRef.current, highRef.current, idx);
+    if (img && img !== lastImg.current && img.complete && img.naturalWidth) {
+      texture.image = img;
+      texture.needsUpdate = true;          // upload only when the source actually changes
+      lastImg.current = img;
     }
     if (matRef.current) matRef.current.uniforms.uScreen.value.set(size.width, size.height);
   });
@@ -77,7 +86,7 @@ function SequenceQuad({ imagesRef, progressRef }) {
   );
 }
 
-export default function HeroSequenceScene({ imagesRef, progressRef }) {
+export default function HeroSequenceScene({ lowRef, highRef, progressRef }) {
   return (
     <Canvas
       className="hero-gl"
@@ -88,7 +97,7 @@ export default function HeroSequenceScene({ imagesRef, progressRef }) {
       style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
       frameloop="always"
     >
-      <SequenceQuad imagesRef={imagesRef} progressRef={progressRef} />
+      <SequenceQuad lowRef={lowRef} highRef={highRef} progressRef={progressRef} />
     </Canvas>
   );
 }

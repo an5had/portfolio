@@ -9,8 +9,9 @@ import HeroSequenceScene from './hero/HeroSequenceScene.jsx';
 import HeroProps from './hero/HeroProps.jsx';
 import HeroCar from './hero/HeroCar.jsx';
 import RingText from './hero/RingText.jsx';
-import useFrameSequence from './hero/useFrameSequence.js';
-import { HERO, clamp, remap, coverPoint, coverRect } from './hero/heroMap.js';
+import useTieredSequence from './hero/useTieredSequence.js';
+import StickyNotes from './hero/StickyNotes.jsx';
+import { HERO, clamp, remap, coverPoint, coverRect, frameForProgress } from './hero/heroMap.js';
 
 export default function Hero() {
   const sectionRef = useRef(null);
@@ -24,7 +25,9 @@ export default function Hero() {
   const loaderRef = useRef(null);
   const progressRef = useRef(0);
 
-  const { imagesRef, progress, ready } = useFrameSequence();
+  const frameRef = useRef(0);       // frame on screen: drives hi-res load priority + sticky ink
+  const notesRef = useRef(null);
+  const { lowRef, highRef, progress, ready } = useTieredSequence(frameRef);
 
   /* Portrait phones/tablets crop the frame hard (cover-fit), so the iPad's screen
      runs off the edges and the props sit outside the viewport entirely. When the
@@ -36,7 +39,7 @@ export default function Hero() {
   const compactRef = useRef(false);
   useEffect(() => {
     const check = () => {
-      const sw = window.innerWidth, sh = window.innerHeight;
+      const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
       const r = coverRect(HERO.screen, sw, sh);
       const fits = r.x >= 4 && r.x + r.w <= sw - 4 && r.w >= 380;
       compactRef.current = !fits;
@@ -69,6 +72,13 @@ export default function Hero() {
       const p = clamp(-rect.top / scrollable, 0, 1);
       progressRef.current = p;
 
+      // the frame the scene is showing — the hi-res loader streams outward from it, and the
+      // handwriting is posed from the same frame so ink and paper never drift apart
+      // (named frameIdx, not `frame`: that would shadow this rAF callback and kill the loop)
+      const frameIdx = frameForProgress(p);
+      frameRef.current = frameIdx;
+      notesRef.current?.update(frameIdx);
+
       /* Exit — matched to zero.university, measured live off its sticky hero:
          the stage always has rounded corners but sits at scale(1.04) while
          pinned, pushing the corners just past the viewport so it reads
@@ -79,7 +89,7 @@ export default function Hero() {
          No opacity or clip change. rect.bottom === vh at release, so `past` is
          exactly 0 for the whole pinned sequence. */
       if (stageRef.current) {
-        const vh = window.innerHeight, sw = window.innerWidth;
+        const vh = window.innerHeight, sw = document.documentElement.clientWidth;
         const past = Math.max(0, vh - rect.bottom);
         const s = 1.04 - 0.54 * clamp(past / (vh * 1.574), 0, 1);
         const st = stageRef.current.style;
@@ -99,7 +109,7 @@ export default function Hero() {
       // keep the ring glued to the sticky's on-screen position (cover-fit aware),
       // and scale it with the frame so it encircles the sticky on every device
       if (ringWrapRef.current && ring > 0.001) {
-        const sw = window.innerWidth, sh = window.innerHeight;
+        const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
         const dw = HERO.videoW * Math.max(sw / HERO.videoW, sh / HERO.videoH);
         const pt = coverPoint(HERO.stickyVX, HERO.stickyVY, sw, sh);
         ringWrapRef.current.style.left = `${pt.x}px`;
@@ -125,7 +135,7 @@ export default function Hero() {
       if (titlesRef.current) {
         const el = titlesRef.current;
         const s = el.style;
-        const sw = window.innerWidth, sh = window.innerHeight;
+        const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
         if (compactRef.current) {
           // detached: let CSS lay it out as a readable bottom panel
           el.classList.add('is-detached');
@@ -180,7 +190,9 @@ export default function Hero() {
   return (
     <section className="hero-scroll" id="top" ref={sectionRef} style={{ height: `${HERO.trackVh}vh` }}>
       <div className="hero-stage" ref={stageRef}>
-        <HeroSequenceScene imagesRef={imagesRef} progressRef={progressRef} />
+        <HeroSequenceScene lowRef={lowRef} highRef={highRef} progressRef={progressRef} />
+        {/* live Caveat handwriting on the (blank) sticky notes, tracked per frame */}
+        <StickyNotes ref={notesRef} />
         <div className="hero-vignette" ref={scrimRef} />
 
         {/* draggable LEGO props sitting on the desk */}

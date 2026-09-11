@@ -45,7 +45,7 @@ export default function HeroProps() {
   const place = useCallback((p) => {
     const el = els.current[p.id];
     if (!el) return;
-    const sw = window.innerWidth, sh = window.innerHeight;
+    const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
     const scale = Math.max(sw / HERO.videoW, sh / HERO.videoH);
     const dw = HERO.videoW * scale;
     const pt = coverPoint(p.vx, p.vy, sw, sh);
