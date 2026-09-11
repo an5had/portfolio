@@ -109,7 +109,7 @@ function SequenceQuad({ lowRef, highRef, progressRef }) {
   );
 }
 
-export default function HeroSequenceScene({ lowRef, highRef, progressRef }) {
+export default function HeroSequenceScene({ lowRef, highRef, progressRef, live = true }) {
   return (
     <Canvas
       className="hero-gl"
@@ -118,7 +118,7 @@ export default function HeroSequenceScene({ lowRef, highRef, progressRef }) {
       linear                                 /* no sRGB encode — exact passthrough of the frames */
       gl={{ antialias: false }}
       style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
-      frameloop="always"
+      frameloop={live ? 'always' : 'never'}  /* paused once scrolled away, so the next section's WebGL gets the GPU */
     >
       <SequenceQuad lowRef={lowRef} highRef={highRef} progressRef={progressRef} />
     </Canvas>

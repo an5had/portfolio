@@ -14,25 +14,6 @@ export function Marquee() {
   );
 }
 
-export function Intro() {
-  return (
-    <section className="intro container" id="intro">
-      <Reveal as="p" className="eyebrow">What I actually do</Reveal>
-      <Reveal as="h2" className="intro-lead" delay={0.05}>
-        I design digital products that feel obvious, then bring the messy part{' '}
-        <span className="u">into focus</span>.
-      </Reveal>
-      <Reveal as="p" className="intro-body" delay={0.1}>
-        Senior UX Designer at Exult Global, working across enterprise systems, analytics,
-        fintech and consumer products for high-profile clients including Wheels Up, Dexcom,
-        HIG Capital, Zayo and CyberProof. I turn vague, under-defined problems into products
-        that ship and get measured, staying close to the work from early research through to
-        engineering handoff.
-      </Reveal>
-    </section>
-  );
-}
-
 export function Clients() {
   return (
     <section className="clients-band" aria-label="Selected clients">

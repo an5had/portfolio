@@ -1,4 +1,3 @@
-const A = '/framer'; // downloaded Framer assets (app/public/framer)
 
 export const PORTRAIT = '/portrait.jpg';
 
@@ -67,7 +66,7 @@ export const CASES = [
     year: '2023 - 2024',
     role: 'UI/UX Designer',
     accent: '#16314a',
-    img: `${A}/oqFr0RGQ9irjji1e4O2okFUkMY.png`,
+    img: '/cases/jobinarabia-candidate-pipeline.png',
     summary:
       'I designed both the admin and employer-facing sides of Jobin Arabia, an applicant tracking system for the GCC. The focus was on simplifying heavy workflows like job posting, candidate tracking and status updates.',
     meta: [
@@ -101,10 +100,10 @@ export const CASES = [
       { text: 'Hiring that busy HR teams can manage on the go.' },
     ],
     gallery: [
-      { src: `${A}/oqFr0RGQ9irjji1e4O2okFUkMY.png`, caption: 'Candidate detail inside the multi-stage requisition pipeline.' },
-      { src: `${A}/WHpNaZiv2qVz214TPi3qKoOTrk.png`, caption: 'The requisitions board, where every open role lives.' },
-      { src: `${A}/wz6LXyFTmUXE7vsJb5u5GMXT0Aw.png`, caption: 'Managing applicants across the talent pool.' },
-      { src: `${A}/32uURZrnczbLvZu7wrJsU0mk8.gif`, caption: 'A short walkthrough of the hiring flow.' },
+      { src: '/cases/jobinarabia-candidate-pipeline.png', caption: 'Candidate detail inside the multi-stage requisition pipeline.' },
+      { src: '/cases/jobinarabia-requisitions-board.png', caption: 'The requisitions board, where every open role lives.' },
+      { src: '/cases/jobinarabia-talent-pool.png', caption: 'Managing applicants across the talent pool.' },
+      { src: '/cases/jobinarabia-hiring-flow.gif', caption: 'A short walkthrough of the hiring flow.' },
     ],
     learning:
       'The win here was not a prettier screen. It was taking away the moments where a recruiter had to hold everything in their head.',
@@ -118,7 +117,7 @@ export const CASES = [
     year: '2023 - 2024',
     role: 'UI/UX Designer',
     accent: '#10403c',
-    img: `${A}/mN0ybzQ9PSlVWZi4Kislo1oc8L8.jpg`,
+    img: '/cases/sea-arabia-booking-vendor-cms.jpg',
     summary:
       'An end-to-end travel and experience booking platform for the GCC, from yacht rentals to desert safaris. I worked on the consumer side and the admin and vendor CMS, with localized UX and a scalable component system.',
     meta: [
@@ -152,7 +151,7 @@ export const CASES = [
       { text: 'A scalable component system shared across both sides of the platform.' },
     ],
     gallery: [
-      { src: `${A}/mN0ybzQ9PSlVWZi4Kislo1oc8L8.jpg`, caption: 'Booking detail and the vendor-management back office.' },
+      { src: '/cases/sea-arabia-booking-vendor-cms.jpg', caption: 'Booking detail and the vendor-management back office.' },
     ],
     learning:
       'Designing both sides of a marketplace keeps you honest. Every bit of simplicity on the customer side is paid for by clarity in the back office.',
@@ -166,7 +165,7 @@ export const CASES = [
     year: '2023 - 2024',
     role: 'UI/UX Designer',
     accent: '#2a1f12',
-    img: `${A}/fRRI3uXnNwxjhxeI1AX2KQk0pk0.png`,
+    img: '/cases/bansal-tmt-loyalty-app.png',
     summary:
       'A loyalty management platform for Bansal Group that rewards contractors, architects and engineers for buying through verified distributors. A mobile-first, role-based app made ordering and tracking rewards simple, with an admin CMS behind it.',
     meta: [
@@ -200,11 +199,11 @@ export const CASES = [
       { text: 'A loyalty loop that drove repeat business and a noticeable uptick in sales.' },
     ],
     gallery: [
-      { src: `${A}/fRRI3uXnNwxjhxeI1AX2KQk0pk0.png`, caption: 'The Bansal TMT loyalty app on the home screen.' },
-      { src: `${A}/Ip3233Ji0ermgIRU3cZ4nqchNZg.png`, caption: 'Points balance and transaction history.' },
-      { src: `${A}/6iGkb5APxX0oeLW4WdxTh6XOCbo.gif`, caption: 'The loyalty flow in motion.' },
-      { src: `${A}/WFIv6O2CuIWegGxQNgMQSQQ4Ok.png`, caption: 'Offers and redemption.' },
-      { src: `${A}/XKHIjDXM0fbzraOWftPVBmVSZMw.png`, caption: 'Account and rewards detail.' },
+      { src: '/cases/bansal-tmt-loyalty-app.png', caption: 'The Bansal TMT loyalty app on the home screen.' },
+      { src: '/cases/bansal-tmt-points-history.png', caption: 'Points balance and transaction history.' },
+      { src: '/cases/bansal-tmt-loyalty-flow.gif', caption: 'The loyalty flow in motion.' },
+      { src: '/cases/bansal-tmt-offers-redemption.png', caption: 'Offers and redemption.' },
+      { src: '/cases/bansal-tmt-account-rewards.png', caption: 'Account and rewards detail.' },
     ],
     learning:
       'Most of it came down to one question: how many points do I have, and what can I do with them. Answer that instantly and people keep coming back.',
@@ -218,7 +217,7 @@ export const CASES = [
     year: '2023 - 2024',
     role: 'UI/UX Designer',
     accent: '#13283a',
-    img: `${A}/bh3YwCEyq1qFj5Gd9n1NRscA.png`,
+    img: '/cases/bansal-hospital-discount-request.png',
     summary:
       'After the Bansal TMT app, Bansal Group came back for a Hospital Discount Management Application. Staff use a mobile app to create and approve medical discounts for eligible patients, with an admin CMS managing the app and user records.',
     meta: [
@@ -252,7 +251,7 @@ export const CASES = [
       { text: 'Transparency and control for administrators.' },
     ],
     gallery: [
-      { src: `${A}/bh3YwCEyq1qFj5Gd9n1NRscA.png`, caption: 'Creating and approving a discount request.' },
+      { src: '/cases/bansal-hospital-discount-request.png', caption: 'Creating and approving a discount request.' },
     ],
     learning:
       'Internal tools live on trust. The moment staff can see exactly where a request sits, a manual process stops being a bottleneck.',
@@ -266,7 +265,7 @@ export const CASES = [
     year: '2021 - 2023',
     role: 'UI/UX Designer',
     accent: '#3a1f52',
-    img: `${A}/Pg4bsgX9HcMzu93WWemgYEvSg.jpg`,
+    img: '/cases/solar-envoy-product-identity.jpg',
     summary:
       'I redesigned and enhanced SolarEnvoy across web and mobile, with user research, lighter task flows and a clean, intuitive interface. It was recognised for clarity and reached #6 in Productivity on the App Store.',
     meta: [
@@ -298,7 +297,7 @@ export const CASES = [
       { text: 'Recognised for clean, intuitive design and user satisfaction.' },
     ],
     gallery: [
-      { src: `${A}/Pg4bsgX9HcMzu93WWemgYEvSg.jpg`, caption: 'SolarEnvoy product identity.' },
+      { src: '/cases/solar-envoy-product-identity.jpg', caption: 'SolarEnvoy product identity.' },
     ],
     learning:
       'We focused on cutting friction, not on chasing a ranking. The ranking showed up afterwards.',
@@ -314,14 +313,14 @@ export const EXPLORATIONS = [
     title: 'Sony Walkman TPS-L2',
     kicker: 'Figma illustration',
     body: 'A pixel-faithful recreation of the original 1979 Walkman, built entirely in Figma to push vector craft and shadow work.',
-    img: `${A}/rr0wKWvyXpWh6CZH0Pvnn03Qh5k.png`,
+    img: '/cases/exploration-sony-walkman-tps-l2.png',
   },
   {
     id: 'koii',
     title: 'Teenage Engineering K.O. II',
     kicker: 'Figma illustration',
     body: 'The EP-133 sampler, rebuilt in Figma down to every knob, pad and screen. A study in product detail and grid discipline.',
-    img: `${A}/vxQf2iwydv932xkFZeTaiaa8.png`,
+    img: '/cases/exploration-teenage-engineering-ko-ii.png',
   },
 ];
 

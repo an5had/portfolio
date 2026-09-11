@@ -22,9 +22,9 @@ export const HERO = {
   // the "I'm Anshad" sticky centre, as fractions of the RAW video frame (tracked, still frames 24–54)
   stickyVX: 0.509, stickyVY: 0.495,
 
-  /* The iPad's display in the final (frozen) frame, in raw video-frame fractions.
-     Measured off the lit blue display (frames 150–222 of the 4K render) and checked against the
-     black-screen frames; radius is a fraction of the video width. The end titles render in here. */
+  /* The iPad's display in raw video-frame fractions. Measured off the lit blue display (frames
+     150–222 of the 4K render) and checked against the switched-off black display on the last
+     frame (241); radius is a fraction of the video width. The end copy is written in here. */
   screen: { l: 0.3594, t: 0.3278, r: 0.6458, b: 0.6963, radius: 0.004 },
 
   // the explicit snap point the brief asks for (I'm Anshad fully revealed)
@@ -77,9 +77,10 @@ export function coverPoint(vx, vy, sw, sh) {
    no dropped seeks. Native 24fps from the 4K render, as AVIF stills in resolution tiers — see
    frameTiers.js (which tier a visitor gets) and useTieredSequence.js (progressive loading). */
 export const FPS = 24;
-/* Ends on frame 215 (8.96s) — the Apple Pencil set back down and at rest. Later frames (the
-   tablet screen switching off) are cut from the sequence entirely. */
-export const FRAME_COUNT = 216;
+/* The full render, all 241 frames: the pencil is set back down (~frame 215), then the tablet's
+   blue grid switches off (frames 225–227) and the display stays black to the end. The end copy is
+   written onto that dark display. */
+export const FRAME_COUNT = 241;
 
 export const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
@@ -89,7 +90,7 @@ export const remap = (v, inA, inB, outA, outB) =>
 
 export function videoTimeForProgress(p) {
   const { introEnd: A, holdEnd: B, playEnd: C, Tr } = HERO;
-  const end = (FRAME_COUNT - 1) / FPS;  // last sharp frame: pencil placed back down
+  const end = (FRAME_COUNT - 1) / FPS;  // last frame: tablet display switched off
   if (p <= A) return (p / A) * Tr;
   if (p <= B) return Tr;                 // hold — ring reveals here
   if (p <= C) return Tr + ((p - B) / (C - B)) * (end - Tr);

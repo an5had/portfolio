@@ -14,6 +14,19 @@ import useTieredSequence from './hero/useTieredSequence.js';
 import StickyNotes from './hero/StickyNotes.jsx';
 import { HERO, clamp, remap, coverPoint, coverRect, frameForProgress, stageSize } from './hero/heroMap.js';
 
+/* Where the end copy goes: the tablet's switched-off display on the last frame. Portrait phones
+   crop the display's sides (cover-fit), so use the slice that's actually on screen, inset from
+   the viewport edges. Returns null when that slice is too small to hold the copy — the copy then
+   detaches into a readable panel instead. */
+function screenBox(sw, sh) {
+  const r = coverRect(HERO.screen, sw, sh);
+  const pad = Math.max(14, sw * 0.04);
+  const x0 = Math.max(r.x, pad), x1 = Math.min(r.x + r.w, sw - pad);
+  const w = x1 - x0;
+  if (w < 300 || r.h < 230) return null;
+  return { x: x0, y: r.y, w, h: r.h, radius: w < r.w ? 0 : r.radius };
+}
+
 export default function Hero() {
   const sectionRef = useRef(null);
   const stageRef = useRef(null);
@@ -32,20 +45,24 @@ export default function Hero() {
   const { lowRef, highRef, progress, ready } = useTieredSequence(frameRef);
 
   /* Portrait phones/tablets crop the frame hard (cover-fit), so the iPad's screen
-     runs off the edges and the props sit outside the viewport entirely. When the
-     screen rect can't fit, fall back: detach the copy into a readable panel and
-     drop the props/car rather than leaving them off-screen. Driven by real
-     geometry, not a width breakpoint, so a narrow desktop window works too. */
-  const [compact, setCompact] = useState(false);
+     runs off the edges and the props sit outside the viewport entirely. The copy
+     uses whatever slice of the display is visible (screenBox); only when that's
+     too small does it detach into a panel. Props/car are dropped rather than left
+     off-screen. Driven by real geometry, not a width breakpoint. */
   const [showProps, setShowProps] = useState(true);
   const compactRef = useRef(false);
+
+  // stop rendering the sequence once the hero has scrolled out of view
+  const [live, setLive] = useState(true);
+  useEffect(() => {
+    const io = new IntersectionObserver(([e]) => setLive(e.isIntersecting), { rootMargin: '10% 0px' });
+    io.observe(sectionRef.current);
+    return () => io.disconnect();
+  }, []);
   useEffect(() => {
     const check = () => {
       const { sw, sh } = stageSize();
-      const r = coverRect(HERO.screen, sw, sh);
-      const fits = r.x >= 4 && r.x + r.w <= sw - 4 && r.w >= 380;
-      compactRef.current = !fits;
-      setCompact(!fits);
+      compactRef.current = !screenBox(sw, sh);
 
       // The props and the car live out at roughly x 0.17–0.87 of the frame.
       // Portrait crops the sides away, so only mount them when that span is
@@ -134,24 +151,24 @@ export default function Hero() {
 
       // nav + titles reveal at the end
       const rev = remap(p, HERO.revealStart, HERO.revealEnd, 0, 1);
-      // gentle on desktop (the copy has its own panel); stronger when detached,
-      // because then the copy sits directly over the footage
+      // light touch when the copy is on the tablet (the dark display is its own backdrop);
+      // stronger when detached, because then the copy sits directly over the footage
       if (scrimRef.current) {
-        scrimRef.current.style.opacity = (rev * (compactRef.current ? 0.8 : 0.38)).toFixed(3);
+        scrimRef.current.style.opacity = (rev * (compactRef.current ? 0.8 : 0.2)).toFixed(3);
       }
 
       if (titlesRef.current) {
         const el = titlesRef.current;
         const s = el.style;
         const { sw, sh } = stageSize();
-        if (compactRef.current) {
+        const r = screenBox(sw, sh);
+        if (!r) {
           // detached: let CSS lay it out as a readable bottom panel
           el.classList.add('is-detached');
           s.left = ''; s.top = ''; s.width = ''; s.height = ''; s.borderRadius = '';
         } else {
-          // locked onto the iPad's screen, from the 4 measured corners
+          // written onto the tablet's switched-off display (the visible slice of it)
           el.classList.remove('is-detached');
-          const r = coverRect(HERO.screen, sw, sh);
           s.left = `${r.x}px`;
           s.top = `${r.y}px`;
           s.width = `${r.w}px`;
@@ -203,7 +220,7 @@ export default function Hero() {
   return (
     <section className="hero-scroll" id="top" ref={sectionRef} style={{ height: `${HERO.trackVh}vh` }}>
       <div className="hero-stage" ref={stageRef}>
-        <HeroSequenceScene lowRef={lowRef} highRef={highRef} progressRef={progressRef} />
+        <HeroSequenceScene lowRef={lowRef} highRef={highRef} progressRef={progressRef} live={live} />
         {/* live Caveat handwriting on the (blank) sticky notes, tracked per frame */}
         <StickyNotes ref={notesRef} />
         <div className="hero-vignette" ref={scrimRef} />

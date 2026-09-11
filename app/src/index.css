@@ -12,7 +12,7 @@
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { background: var(--bg); }
-body { color: var(--fg); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body { color: var(--fg); font-family: var(--sans); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; overflow-x: clip; }
 a { color: inherit; text-decoration: none; }
 ::selection { background: var(--accent); color: #fff; }
 img { display: block; max-width: 100%; }
@@ -107,7 +107,10 @@ img { display: block; max-width: 100%; }
     linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.28) 36%, transparent 60%); }
 
 /* ── scrollytelling hero ───────────────────────────────────────────────── */
-.hero-scroll { position: relative; }
+/* overflow-x: clip — the pinned stage is scale(1.04), ~2% wider than the screen on each side.
+   iOS Safari ignores body overflow-x:hidden for touch panning, so that sliver let the whole page
+   drag sideways. clip (not hidden) trims it without making a scroll container, so sticky still pins. */
+.hero-scroll { position: relative; overflow-x: clip; }
 /* scale(1.04) + radius from first paint, so there's no jump before JS takes over
    (Hero.jsx drives the exit scale; see the note there) */
 /* height: 100lvh — the LARGE viewport. On iPhone Safari (floating, translucent toolbars) the
@@ -182,32 +185,36 @@ img { display: block; max-width: 100%; }
 .scroll-pill-track i { position: absolute; inset: 0; border-radius: inherit; background: var(--accent); transform: scaleX(0); transform-origin: left center; }
 @keyframes scrollPillBob { 0%, 100% { transform: translateY(-1.5px); opacity: 0.55; } 50% { transform: translateY(1.5px); opacity: 1; } }
 
-/* The end copy lives INSIDE the iPad's screen on the frozen final frame.
-   Position/size/radius come from the 4 measured corners (set in JS); everything
-   here scales off --sw (the screen's pixel width) so type fits at any viewport.
+/* The end copy is written straight onto the tablet's display, which has switched off (black) by
+   the last frame — no panel of our own. Position/size come from the measured display rect (set
+   in JS, clipped to the visible slice on portrait phones); type scales off --sw (that width),
+   with floors so phone copy stays readable. A faint backlight glow reads as the display waking.
    .hero-stage prefix beats `.hero-inner { position: relative }` declared later. */
 .hero-stage .hero-screen { position: absolute; z-index: 3; opacity: 0; overflow: hidden;
   display: flex; align-items: center;
-  background: rgba(9, 11, 15, 0.90);
-  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.09), 0 24px 60px rgba(0,0,0,0.45); }
+  background: radial-gradient(90% 80% at 42% 50%, rgba(255,255,255,0.04), rgba(255,255,255,0) 70%); }
 .hero-screen-inner { width: 100%; padding: 0 calc(var(--sw) * 0.072); }
-.hero-screen .hero-kicker { font-size: calc(var(--sw) * 0.029); letter-spacing: 0.26em;
+.hero-screen .hero-kicker { font-size: max(9.5px, calc(var(--sw) * 0.029)); letter-spacing: 0.26em;
   margin-bottom: calc(var(--sw) * 0.030); }
-.hero-screen .hero-title { font-size: calc(var(--sw) * 0.088); line-height: 1.0; letter-spacing: -0.03em; }
-.hero-screen .hero-sub { font-size: calc(var(--sw) * 0.0335); margin-top: calc(var(--sw) * 0.038);
+.hero-screen .hero-title { font-size: max(26px, calc(var(--sw) * 0.088)); line-height: 1.06; letter-spacing: -0.03em; }
+/* the generic .hero-title .line clips (overflow:hidden) to its 1em line box, which sliced the
+   descenders off "messy" — nothing here slides lines in, so let the glyphs breathe */
+.hero-screen .hero-title .line { overflow: visible; }
+.hero-screen .hero-sub { font-size: max(12.5px, calc(var(--sw) * 0.0335)); margin-top: calc(var(--sw) * 0.038);
   max-width: 100%; line-height: 1.45; }
 .hero-screen .hero-foot { margin-top: calc(var(--sw) * 0.042); font-size: calc(var(--sw) * 0.027); }
 
-/* Portrait / narrow: the iPad's screen is cropped off the edges, so the copy
-   detaches into a readable panel near the bottom instead of being clipped. */
+/* Fallback only: when too little of the display is on screen to hold the copy (e.g. landscape
+   phones), it detaches into a readable panel near the bottom instead of being clipped. */
 .hero-stage .hero-screen.is-detached {
   left: 50%; right: auto; transform: translateX(-50%);
   top: auto; bottom: clamp(24px, 7vh, 72px);
   width: min(560px, 90vw); height: auto;
   border-radius: 20px;
   padding: clamp(18px, 5vw, 26px) 0;
-  background: rgba(9, 11, 15, 0.86); }
+  background: rgba(9, 11, 15, 0.86);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.09), 0 24px 60px rgba(0,0,0,0.45); }
 .hero-screen.is-detached .hero-screen-inner { padding: 0 clamp(18px, 5vw, 28px); }
 .hero-screen.is-detached .hero-kicker { font-size: clamp(10px, 2.9vw, 12px); margin-bottom: 0.9rem; }
 .hero-screen.is-detached .hero-title { font-size: clamp(28px, 8.6vw, 44px); line-height: 1.03; }
@@ -250,12 +257,128 @@ img { display: block; max-width: 100%; }
 .marquee-track i { color: var(--accent); font-style: normal; font-size: 20px; }
 
 /* intro */
-.intro { padding: clamp(90px, 16vh, 200px) 0 clamp(70px, 12vh, 150px); }
-.intro-lead { font-weight: 300; font-size: clamp(28px, 4.4vw, 64px); line-height: 1.08; letter-spacing: -0.035em; max-width: 20ch; margin: 1.4rem 0 0; }
-.intro-body { margin-top: 2.4rem; max-width: 60ch; font-size: clamp(15px, 1.4vw, 18px); font-weight: 300; color: var(--muted); }
+/* ── focus section: "Hand me the mess." ─────────────────────────────────────
+   Pinned stage like the hero. The WebGL board fills the stage behind the copy; .focus-slot is
+   an empty grid cell that tells the camera where the finished board should land. */
+.focus { position: relative; height: calc(100vh + 260vh); height: calc(100svh + 260vh); overflow-x: clip; }
+.focus-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
+  display: grid; grid-template-columns: minmax(300px, 0.8fr) 1.45fr; grid-template-rows: minmax(0, 1fr);
+  column-gap: clamp(28px, 4.5vw, 88px);
+  padding: clamp(84px, 12vh, 124px) max(5vw, calc((100vw - 1320px) / 2)) clamp(16px, 3vh, 30px); }
+/* desktop: copy on the left, viewfinder + lens ring stacked on the right */
+.focus-copy { grid-column: 1; align-self: center; position: relative; z-index: 3; }
+.focus-view { grid-column: 2; display: flex; flex-direction: column; min-height: 0; }
+.focus-glow { position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(52% 58% at 67% 44%, rgba(47, 93, 168, 0.13), transparent 70%),
+              radial-gradient(34% 36% at 72% 56%, rgba(255, 86, 48, 0.05), transparent 70%); }
+.focus-gl { z-index: 1; }
+.focus-slot { position: relative; z-index: 2; pointer-events: none; flex: 1 1 auto; min-height: 0; margin: 4px 0 8px; }
+.focus-head { position: relative; }
+.focus-title { font-weight: 300; font-size: clamp(34px, 3.6vw, 58px); line-height: 1.02; letter-spacing: -0.045em; margin-top: 0.9rem; }
+.focus-title .serif-accent { letter-spacing: -0.01em; padding-right: 0.06em; }
+
+.focus-steps { position: relative; padding-top: clamp(20px, 3.4vh, 36px); }
+.focus-dots { display: flex; gap: 6px; margin-bottom: 12px; }
+.focus-dots button { background: none; border: 0; padding: 8px 0; cursor: pointer; }
+.focus-dots i { display: block; width: 26px; height: 3px; border-radius: 3px; background: rgba(255,255,255,0.14); transition: background 0.4s var(--ease), width 0.5s var(--ease); }
+.focus-dots .is-on i { background: var(--accent); }
+.focus-dots button[aria-current="step"] i { width: 40px; }
+.focus-captions { list-style: none; display: grid; }
+.focus-captions li { grid-area: 1 / 1; opacity: 0; transform: translateY(10px); filter: blur(8px); pointer-events: none;
+  transition: opacity 0.45s var(--ease), transform 0.6s var(--ease), filter 0.55s var(--ease); }
+.focus-captions li.is-active { opacity: 1; transform: none; filter: none; pointer-events: auto; transition-delay: 0.08s; }
+.fc-no { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); font-variant-numeric: tabular-nums; }
+.focus-captions h3 { font-weight: 500; font-size: clamp(18px, 1.5vw, 23px); letter-spacing: -0.02em; line-height: 1.2; margin: 0.45rem 0 0.4rem; }
+.focus-captions p { color: var(--muted); font-weight: 300; font-size: clamp(13.5px, 0.95vw, 15px); line-height: 1.55; max-width: 34ch; }
+.fc-cta { display: inline-flex; gap: 8px; margin-top: 12px; font-size: 13px; font-weight: 500; color: var(--fg);
+  padding-bottom: 3px; border-bottom: 1px solid var(--accent); transition: gap 0.3s var(--ease), color 0.3s; }
+.fc-cta:hover { gap: 12px; color: var(--accent); }
+
+/* MAP: audit outlines + tags (positioned from the 3D cards in FocusScene) */
+.focus-audit { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; opacity: 0; overflow: visible; }
+.focus-audit polygon { fill: rgba(255, 86, 48, 0.05); stroke: var(--accent); stroke-width: 1.3; stroke-dasharray: 6 5;
+  stroke-linejoin: round; animation: auditAnts 1.2s linear infinite; }
+@keyframes auditAnts { to { stroke-dashoffset: -22; } }
+.audit-tag { position: absolute; left: 0; top: 0; z-index: 3; opacity: 0; pointer-events: none; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 8px; padding: 4px 11px 4px 4px; border-radius: 999px;
+  background: rgba(12, 12, 15, 0.82); border: 1px solid rgba(255, 86, 48, 0.45);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  font-size: 11.5px; font-weight: 500; color: var(--fg); letter-spacing: 0.01em; }
+.audit-tag b { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; background: var(--accent); color: #fff; border-radius: 999px; padding: 3px 7px; }
+
+/* viewfinder over the board — an aspect-locked box fitted inside the slot the same way the camera
+   fits the board (container units), so the corners hug the board instead of the empty slot */
+.focus-slot { container-type: size; }
+.vf { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: calc(min(100cqw, 100cqh * 1.4763) * 0.82); aspect-ratio: 8.4 / 5.69; }
+.vf i { position: absolute; width: 22px; height: 22px; border: 0 solid rgba(255,255,255,0.32);
+  transition: border-color 0.5s var(--ease), transform 0.6s var(--ease); }
+.vf i:nth-child(1) { left: 0; top: 0; border-left-width: 1.5px; border-top-width: 1.5px; }
+.vf i:nth-child(2) { right: 0; top: 0; border-right-width: 1.5px; border-top-width: 1.5px; }
+.vf i:nth-child(3) { right: 0; bottom: 0; border-right-width: 1.5px; border-bottom-width: 1.5px; }
+.vf i:nth-child(4) { left: 0; bottom: 0; border-left-width: 1.5px; border-bottom-width: 1.5px; }
+.is-locked .vf i { border-color: var(--accent); }
+.is-locked .vf i:nth-child(1) { transform: translate(6px, 6px); }
+.is-locked .vf i:nth-child(2) { transform: translate(-6px, 6px); }
+.is-locked .vf i:nth-child(3) { transform: translate(-6px, -6px); }
+.is-locked .vf i:nth-child(4) { transform: translate(6px, -6px); }
+.vf-mode { position: absolute; left: 30px; top: 3px; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+.vf-mf { color: var(--dim); }
+.vf-af { color: var(--accent); display: none; }
+.is-locked .vf-mf { display: none; }
+.is-locked .vf-af { display: inline; animation: vfBlink 0.9s steps(2, end) 2; }
+@keyframes vfBlink { 50% { opacity: 0.2; } }
+.vf-note { position: absolute; right: 30px; bottom: 3px; font-size: 10px; letter-spacing: 0.08em; color: var(--dim); }
+
+/* the lens ring */
+.focus-ring-wrap { align-self: center; position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 9px; width: min(440px, 80%); padding-top: 12px; }
+.fring { position: relative; width: 100%; height: 54px; border-radius: 14px; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  background: #0a0a0c; outline: none;
+  box-shadow: 0 26px 50px -24px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.07), inset 0 1px 0 rgba(255,255,255,0.06); }
+.fring:active { cursor: grabbing; }
+.fring:focus-visible { box-shadow: 0 26px 50px -24px rgba(0,0,0,0.95), 0 0 0 2px var(--accent); }
+.fring canvas { display: block; width: 100%; height: 100%; border-radius: inherit; }
+.fring-index { position: absolute; left: 50%; top: -11px; transform: translateX(-50%); width: 0; height: 0;
+  border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid var(--accent); }
+.fring-hint { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); transition: opacity 0.6s var(--ease); }
+.fring-hint span { display: inline-block; margin-right: 4px; animation: hintNudge 1.8s var(--ease) infinite; }
+.fring-hint.is-hidden { opacity: 0; }
+@keyframes hintNudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
+
+@media (max-width: 899px) {
+  .focus-stage { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "head" "slot" "steps" "ring";
+    padding: 80px 20px calc(12px + env(safe-area-inset-bottom, 0px)); }
+  /* phone: head, board, caption, ring — the wrappers dissolve into the stage grid */
+  .focus-copy, .focus-view { display: contents; }
+  .focus-head { grid-area: head; z-index: 3; }
+  .focus-slot { grid-area: slot; }
+  .focus-steps { grid-area: steps; z-index: 3; }
+  .focus-ring-wrap { grid-area: ring; width: 100%; }
+  .focus-glow { background: radial-gradient(70% 45% at 50% 42%, rgba(47, 93, 168, 0.14), transparent 70%); }
+  .focus-title { font-size: clamp(32px, 9.5vw, 46px); margin-top: 0.5rem; }
+  .focus-slot { margin: 10px 0 8px; }
+  .focus-steps { padding-top: 0; }
+  .focus-dots { margin-bottom: 8px; }
+  .focus-dots button { padding: 6px 0; }
+  .fc-no { font-size: 10px; }
+  .focus-captions h3 { font-size: 19px; margin: 0.35rem 0 0.35rem; }
+  .focus-captions p { font-size: 13.5px; }
+  .fc-cta { margin-top: 10px; font-size: 13px; }
+  .fring { height: 50px; }
+  .vf { width: calc(min(100cqw, 100cqh * 1.4763) * 0.98); }
+  .vf-note { display: none; }
+  .audit-tag { font-size: 10.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .focus { height: auto; }
+  .focus-stage { position: relative; }
+  .focus-captions li { transition: none; filter: none; }
+  .focus-audit polygon, .fring-hint span, .is-locked .vf-af { animation: none; }
+}
 
 /* work */
-.work { padding-bottom: clamp(60px, 10vh, 120px); }
+.work { padding: clamp(90px, 15vh, 180px) 0 clamp(60px, 10vh, 120px); }
 .work-head { margin-bottom: clamp(30px, 5vh, 60px); }
 .case { width: min(1240px, 90vw); margin: 0 auto clamp(60px, 12vh, 150px); display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(28px, 5vw, 80px); align-items: center; }
 .case.flip .case-media { order: 2; }
