@@ -14,6 +14,7 @@ import { HERO, clamp, remap, coverPoint, coverRect } from './hero/heroMap.js';
 
 export default function Hero() {
   const sectionRef = useRef(null);
+  const stageRef = useRef(null);
   const ringRef = useRef(null);
   const ringWrapRef = useRef(null);
   const titlesRef = useRef(null);
@@ -67,6 +68,24 @@ export default function Hero() {
       const scrollable = section.offsetHeight - window.innerHeight || 1;
       const p = clamp(-rect.top / scrollable, 0, 1);
       progressRef.current = p;
+
+      /* Exit — matched to zero.university, measured live off its sticky hero:
+         the stage always has rounded corners but sits at scale(1.04) while
+         pinned, pushing the corners just past the viewport so it reads
+         full-bleed. The moment the sequence releases, scale falls LINEARLY from
+         1.04 to a 0.5 floor over ~1.57 viewport-heights of scroll, about the
+         centre — the card shrinks into its own middle as it travels up,
+         revealing the corners and opening a gap before the next section.
+         No opacity or clip change. rect.bottom === vh at release, so `past` is
+         exactly 0 for the whole pinned sequence. */
+      if (stageRef.current) {
+        const vh = window.innerHeight, sw = window.innerWidth;
+        const past = Math.max(0, vh - rect.bottom);
+        const s = 1.04 - 0.54 * clamp(past / (vh * 1.574), 0, 1);
+        const st = stageRef.current.style;
+        st.transform = `scale(${s.toFixed(4)})`;
+        st.borderRadius = `${Math.round(Math.min(32, Math.max(18, sw * 0.021)))}px`;
+      }
 
       // circular text ring: reveal → hold → fade
       let ring = 0;
@@ -160,7 +179,7 @@ export default function Hero() {
 
   return (
     <section className="hero-scroll" id="top" ref={sectionRef} style={{ height: `${HERO.trackVh}vh` }}>
-      <div className="hero-stage">
+      <div className="hero-stage" ref={stageRef}>
         <HeroSequenceScene imagesRef={imagesRef} progressRef={progressRef} />
         <div className="hero-vignette" ref={scrimRef} />
 

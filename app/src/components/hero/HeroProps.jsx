@@ -107,10 +107,15 @@ export default function HeroProps() {
     const startX = e.clientX, startY = e.clientY;
     const baseX = parseFloat(el.style.left) || 0;
     const baseY = parseFloat(el.style.top) || 0;
+    // The hero stage is scaled (1.04 while pinned, smaller on exit). Prop
+    // positions are in the stage's local px but pointer deltas are screen px,
+    // so divide by the stage's scale to keep the prop under the cursor.
+    const stage = el.closest('.hero-stage');
+    const k = (stage && stage.getBoundingClientRect().width / stage.offsetWidth) || 1;
 
     const onMove = (ev) => {
-      el.style.left = `${baseX + (ev.clientX - startX)}px`;
-      el.style.top = `${baseY + (ev.clientY - startY)}px`;
+      el.style.left = `${baseX + (ev.clientX - startX) / k}px`;
+      el.style.top = `${baseY + (ev.clientY - startY) / k}px`;
     };
     const onUp = (ev) => {
       try { el.releasePointerCapture(ev.pointerId); } catch {}

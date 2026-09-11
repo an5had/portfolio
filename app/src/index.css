@@ -33,29 +33,67 @@ img { display: block; max-width: 100%; }
 @media (hover: none) { .cursor, .cursor-ring { display: none; } }
 
 /* nav — proper top bar */
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; border-bottom: 1px solid transparent; transition: background 0.4s var(--ease), border-color 0.4s; }
-.nav.solid { background: rgba(8, 8, 10, 0.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom-color: var(--line); }
-.nav-in { display: flex; align-items: center; justify-content: space-between; padding: 15px clamp(20px, 5vw, 56px); max-width: 1440px; margin: 0 auto; }
-.brand { display: inline-flex; align-items: center; line-height: 1; font-weight: 600; font-size: 20px; letter-spacing: -0.03em; color: var(--fg); transition: opacity 0.25s; }
+/* ── nav island ──────────────────────────────────────────────────────────────
+   A floating glass pill instead of a full-width bar. The <header> is a
+   click-through strip; only the island (and the mobile menu card) take pointer
+   events, so the page under the empty sides stays interactive. Centred with
+   margin, not transform, so the hero's reveal translateY on .nav still works. */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 300; pointer-events: none;
+  padding: max(14px, env(safe-area-inset-top)) 12px 0; }
+.nav-in { pointer-events: auto; display: flex; align-items: center; gap: 2px;
+  width: fit-content; max-width: calc(100vw - 24px); margin: 0 auto;
+  padding: 6px 6px 6px 14px; border-radius: 999px;
+  background: rgba(20, 20, 24, 0.52);
+  -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.09);
+  box-shadow: 0 12px 32px -12px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.06);
+  transition: background 0.35s var(--ease), border-color 0.35s, box-shadow 0.35s; }
+.nav.solid .nav-in { background: rgba(14, 14, 17, 0.78); border-color: rgba(255,255,255,0.11); }
+
+.brand { display: inline-flex; align-items: center; line-height: 1; color: var(--fg);
+  margin-right: 8px; padding-right: 14px; border-right: 1px solid rgba(255,255,255,0.1);
+  transition: opacity 0.25s; }
 .brand:hover { opacity: 0.7; }
-.nav-links { display: flex; gap: 6px; }
-.nav-links a { font-size: 14px; color: var(--muted); padding: 8px 15px; border-radius: 999px; transition: color 0.2s, background 0.2s; }
-.nav-links a:hover { color: var(--fg); }
-.nav-links a.active { color: var(--fg); background: rgba(255,255,255,0.07); }
-.nav-cta { border: 1px solid rgba(255,255,255,0.22); border-radius: 999px; padding: 9px 18px; font-size: 13px; color: var(--fg); transition: border-color 0.25s, background 0.25s, color 0.25s; }
-.nav-cta:hover { border-color: var(--accent); background: var(--accent); color: #fff; }
-.nav-burger { display: none; flex-direction: column; gap: 5px; align-items: center; justify-content: center; width: 42px; height: 42px; background: none; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
-.nav-burger span { width: 18px; height: 1.5px; background: var(--fg); transition: transform 0.3s var(--ease), opacity 0.3s; }
+.brand-mark { display: block; width: 22px; height: 22px; }
+
+.nav-links { display: flex; gap: 2px; }
+.nav-links a { font-size: 13.5px; color: var(--muted); padding: 8px 14px; border-radius: 999px;
+  transition: color 0.2s, background 0.2s; }
+.nav-links a:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
+.nav-links a.active { color: var(--fg); background: rgba(255,255,255,0.1); }
+
+.nav-cta { margin-left: 8px; border-radius: 999px; padding: 9px 16px; font-size: 13px; font-weight: 500;
+  background: var(--fg); color: #0b0b0d;
+  transition: background 0.25s, color 0.25s; }
+.nav-cta:hover { background: var(--accent); color: #fff; }
+
+.nav-burger { display: none; flex-direction: column; gap: 5px; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border: 0; border-radius: 999px; background: rgba(255,255,255,0.08); cursor: pointer; }
+.nav-burger span { width: 16px; height: 1.5px; background: var(--fg); transition: transform 0.3s var(--ease), opacity 0.3s; }
 .nav-menu { display: none; }
+
 @media (max-width: 860px) {
+  .nav-in { width: 100%; justify-content: space-between; }
+  .brand { border-right: 0; margin-right: 0; padding-right: 0; }
   .nav-links, .nav-cta { display: none; }
   .nav-burger { display: inline-flex; }
-  .nav.open { background: rgba(8,8,10,0.97); backdrop-filter: blur(16px); }
+  .nav.open .nav-in { background: rgba(14, 14, 17, 0.92); }
   .nav.open .nav-burger span:nth-child(1) { transform: translateY(3.25px) rotate(45deg); }
   .nav.open .nav-burger span:nth-child(2) { transform: translateY(-3.25px) rotate(-45deg); }
-  .nav-menu { display: flex; flex-direction: column; padding: 0 clamp(20px,5vw,56px); opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.3s, max-height 0.4s var(--ease), padding 0.4s var(--ease); }
-  .nav.open .nav-menu { opacity: 1; max-height: 70vh; padding: 4px clamp(20px,5vw,56px) 26px; }
-  .nav-menu a { font-size: 24px; font-weight: 300; letter-spacing: -0.02em; color: var(--fg); padding: 14px 0; border-bottom: 1px solid var(--line); }
+  /* menu drops out of the island as a matching glass card */
+  .nav-menu { display: flex; flex-direction: column; position: absolute; top: calc(100% + 8px); left: 12px; right: 12px;
+    padding: 8px; border-radius: 26px;
+    background: rgba(14, 14, 17, 0.92);
+    -webkit-backdrop-filter: blur(18px) saturate(160%); backdrop-filter: blur(18px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.09); box-shadow: 0 24px 48px -16px rgba(0,0,0,0.7);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transform: translateY(-8px) scale(0.98); transform-origin: top center;
+    transition: opacity 0.25s, transform 0.35s var(--ease), visibility 0.35s; }
+  .nav.open .nav-menu { opacity: 1; visibility: visible; pointer-events: auto; transform: none; }
+  .nav-menu a { font-size: 20px; letter-spacing: -0.01em; color: var(--fg); padding: 14px 16px; border-radius: 18px;
+    transition: background 0.2s; }
+  .nav-menu a:hover, .nav-menu a:active { background: rgba(255,255,255,0.06); }
+  .nav-menu a:last-child { margin-top: 6px; text-align: center; font-weight: 500; background: var(--fg); color: #0b0b0d; }
 }
 
 /* hero */
@@ -70,7 +108,10 @@ img { display: block; max-width: 100%; }
 
 /* ── scrollytelling hero ───────────────────────────────────────────────── */
 .hero-scroll { position: relative; }
-.hero-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #000; }
+/* scale(1.04) + radius from first paint, so there's no jump before JS takes over
+   (Hero.jsx drives the exit scale; see the note there) */
+.hero-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #000;
+  border-radius: 32px; transform: scale(1.04); transform-origin: 50% 50%; will-change: transform; }
 .hero-stage .hero-gl, .hero-stage canvas { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }
 
 /* draggable props on the desk */
@@ -149,6 +190,8 @@ img { display: block; max-width: 100%; }
 /* nav bar stays hidden until the hero reveals it */
 .nav { transition: opacity 0.6s ease, transform 0.6s ease; }
 html[data-hero="lock"] .nav { opacity: 0; transform: translateY(-110%); pointer-events: none; }
+/* the island opts back into pointer events, so it must be locked out explicitly */
+html[data-hero="lock"] .nav-in, html[data-hero="lock"] .nav-menu { pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-ring-svg, .hero-hint i { animation: none; }
