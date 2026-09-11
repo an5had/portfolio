@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Reveal from './Reveal.jsx';
+import Lettered from './Lettered.jsx';
 import { EXPLORATIONS } from '../data.js';
 
 // fx = horizontal position as a fraction of canvas width; y in px
@@ -54,7 +55,7 @@ export default function Explorations({ heading = true }) {
       {heading && (
         <div className="container figma-head">
           <Reveal as="p" className="eyebrow">Just for fun</Reveal>
-          <Reveal as="h2" className="section-title" delay={0.05}>Built in Figma, for the love of it.</Reveal>
+          <Reveal as="h2" className="section-title" delay={0.05}>Built in <Lettered>Figma</Lettered>, for the love of it.</Reveal>
           <Reveal as="p" className="figma-note" delay={0.1}>
             Drag things around. It is basically my Figma canvas, minus the 200 unnamed layers.
           </Reveal>

@@ -2,9 +2,8 @@
    - Only enters once the iPad has slid into centre (scroll progress ≥ CAR_MIN_P).
    - Runs a diagonal lane across the clear mat below the tablet, chosen to miss
      every prop's DEFAULT position, the tablet, the pencil and the corner mouse.
-   - Any prop dragged into the lane gets flattened with a synthesised crunch, then
-     respawns at its default spot.
-   Sound is generated with Web Audio (no asset) and only after a user gesture. */
+   - Any prop dragged into the lane gets flattened, then respawns at its default spot.
+   Silent on purpose: the focus ring's ticks are the only sound on the site. */
 import { useEffect, useRef } from 'react';
 import { HERO, coverPoint, clamp, stageSize } from './heroMap.js';
 
@@ -25,47 +24,7 @@ export default function HeroCar({ progressRef }) {
     const el = elRef.current;
     if (!el) return;
 
-    let raf = 0, timer = 0, dir = 1, start = 0, audio = null;
-
-    const ensureAudio = () => {
-      if (!audio) {
-        try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch { audio = null; }
-      }
-      if (audio && audio.state === 'suspended') audio.resume();
-      return audio;
-    };
-    const onGesture = () => ensureAudio();
-    window.addEventListener('pointerdown', onGesture, { passive: true });
-    window.addEventListener('wheel', onGesture, { passive: true });
-
-    function crunch() {
-      const ctx = audio;
-      if (!ctx || ctx.state !== 'running') return;
-      const t = ctx.currentTime, dur = 0.20;
-      const buf = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * dur), ctx.sampleRate);
-      const data = buf.getChannelData(0);
-      for (let i = 0; i < data.length; i++) {
-        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 2.6);
-      }
-      const src = ctx.createBufferSource(); src.buffer = buf;
-      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.1;
-      bp.frequency.setValueAtTime(1600, t);
-      bp.frequency.exponentialRampToValueAtTime(320, t + dur);
-      const g1 = ctx.createGain();
-      g1.gain.setValueAtTime(0.30, t);
-      g1.gain.exponentialRampToValueAtTime(0.0008, t + dur);
-      src.connect(bp).connect(g1).connect(ctx.destination);
-      src.start(t); src.stop(t + dur);
-
-      const osc = ctx.createOscillator(); osc.type = 'triangle';
-      osc.frequency.setValueAtTime(210, t);
-      osc.frequency.exponentialRampToValueAtTime(65, t + 0.13);
-      const g2 = ctx.createGain();
-      g2.gain.setValueAtTime(0.22, t);
-      g2.gain.exponentialRampToValueAtTime(0.0008, t + 0.15);
-      osc.connect(g2).connect(ctx.destination);
-      osc.start(t); osc.stop(t + 0.16);
-    }
+    let raf = 0, timer = 0, dir = 1, start = 0;
 
     // shrink both boxes so only a real overlap counts (both PNGs carry padding)
     const inset = (r, f) => ({
@@ -81,7 +40,6 @@ export default function HeroCar({ progressRef }) {
           p.classList.add('is-crushed');
           // HeroProps listens for this and respawns the prop at its default spot
           p.dispatchEvent(new CustomEvent('prop-crushed', { bubbles: true }));
-          crunch();
         }
       });
     }
@@ -138,8 +96,6 @@ export default function HeroCar({ progressRef }) {
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(timer);
-      window.removeEventListener('pointerdown', onGesture);
-      window.removeEventListener('wheel', onGesture);
     };
   }, [progressRef]);
 

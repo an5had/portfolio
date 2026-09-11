@@ -1,4 +1,5 @@
 import PageHeader from '../components/PageHeader.jsx';
+import Lettered from '../components/Lettered.jsx';
 import Work from '../components/Work.jsx';
 import Explorations from '../components/Explorations.jsx';
 import { Contact } from '../components/Sections.jsx';
@@ -8,7 +9,7 @@ export default function WorksPage() {
     <>
       <PageHeader
         kicker="Selected work"
-        title="Case studies across enterprise, data & consumer."
+        title={<>Case studies across enterprise, data &amp; <Lettered>Consumer.</Lettered></>}
         sub="Five years of shipping products, from 50+ dashboards at Wheels Up to loyalty apps, an ATS and a #6 App Store productivity app."
       />
       <Work heading={false} />

@@ -9,6 +9,7 @@
 import { useEffect, useRef, useState } from 'react';
 import FocusScene from './focus/FocusScene.jsx';
 import FocusRing from './focus/FocusRing.jsx';
+import Lettered from './Lettered.jsx';
 import { STOPS, HOLD, stopIndex, phases, clamp01 } from './focus/focusMath.js';
 import { AUDIT } from './focus/focusCards.js';
 
@@ -264,7 +265,7 @@ export default function FocusSection() {
         <header className="focus-head">
           <p className="eyebrow">What I actually do</p>
           <h2 id="focus-title" className="focus-title">
-            Hand me the <em className="serif-accent has-note" data-note="the messier, the better"><span className="swash">M</span>ess.</em>
+            Hand me the <Lettered note="the messier, the better">Mess.</Lettered>
           </h2>
         </header>
 

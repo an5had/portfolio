@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Reveal from './Reveal.jsx';
+import Lettered from './Lettered.jsx';
 import { PHOTOS } from '../photos.js';
 
 export default function Lens() {
@@ -31,7 +32,7 @@ export default function Lens() {
       <div className="container lens-head">
         <div>
           <Reveal as="p" className="eyebrow">Off the clock</Reveal>
-          <Reveal as="h2" className="section-title" delay={0.05}>Through my lens</Reveal>
+          <Reveal as="h2" className="section-title" delay={0.05}>Through my <Lettered>Lens</Lettered></Reveal>
           <Reveal delay={0.12}>
             <Link to="/gallery" className="lens-link" data-cursor="link">View the full gallery, take a print &rarr;</Link>
           </Reveal>

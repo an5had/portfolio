@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Reveal from './Reveal.jsx';
+import Lettered from './Lettered.jsx';
 import { CASES } from '../data.js';
 
 function Counter({ to, prefix = '', suffix = '' }) {
@@ -58,7 +59,7 @@ export default function Work({ items = CASES, heading = true, showAllLink = fals
       {heading && (
         <div className="container work-head">
           <Reveal as="p" className="eyebrow">Selected work</Reveal>
-          <Reveal as="h2" className="section-title" delay={0.05}>Case studies</Reveal>
+          <Reveal as="h2" className="section-title" delay={0.05}>Case <Lettered>Studies</Lettered></Reveal>
         </div>
       )}
 

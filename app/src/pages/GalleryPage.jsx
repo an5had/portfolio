@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageHeader from '../components/PageHeader.jsx';
+import Lettered from '../components/Lettered.jsx';
 import { Contact } from '../components/Sections.jsx';
 import CertifyModal from '../components/CertifyModal.jsx';
 import { PHOTOS } from '../photos.js';
@@ -25,7 +26,7 @@ export default function GalleryPage() {
     <>
       <PageHeader
         kicker="Photography"
-        title="The gallery."
+        title={<>The <Lettered note="one print each">Gallery.</Lettered></>}
         sub="Street photographs from everyday life. Each one is released as a single certified print, set on a white mat and signed."
       />
 

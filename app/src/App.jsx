@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import useSmoothScroll from './hooks/useSmoothScroll.js';
 import Cursor from './components/Cursor.jsx';
+import BootLoader from './components/BootLoader.jsx';
 import Nav from './components/Nav.jsx';
 import { Footer } from './components/Sections.jsx';
 import HomePage from './pages/HomePage.jsx';
@@ -29,6 +30,7 @@ function Layout() {
   const immersive = pathname === '/lab';
   return (
     <>
+      <BootLoader />
       <Cursor />
       {!immersive && <Nav />}
       <ScrollManager />

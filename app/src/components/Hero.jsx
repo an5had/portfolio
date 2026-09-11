@@ -12,6 +12,7 @@ import HeroCar from './hero/HeroCar.jsx';
 import RingText from './hero/RingText.jsx';
 import useTieredSequence from './hero/useTieredSequence.js';
 import StickyNotes from './hero/StickyNotes.jsx';
+import Lettered from './Lettered.jsx';
 import { HERO, clamp, remap, coverPoint, coverRect, frameForProgress, stageSize } from './hero/heroMap.js';
 
 /* Where the end copy goes: the tablet's switched-off display on the last frame. Portrait phones
@@ -37,7 +38,6 @@ export default function Hero() {
   const scrimRef = useRef(null);
   const hintRef = useRef(null);
   const pillFillRef = useRef(null);
-  const loaderRef = useRef(null);
   const progressRef = useRef(0);
 
   const frameRef = useRef(0);       // frame on screen: drives hi-res load priority + sticky ink
@@ -142,11 +142,11 @@ export default function Hero() {
         ringWrapRef.current.style.width = `${Math.min(0.28 * dw, 0.92 * sw)}px`;
       }
 
-      // desk props settle in once the mat is established, then stay put
+      // desk props: hidden while the boot loader flies its copies in, on the desk from then on
       if (propsRef.current) {
-        const pr = remap(p, 0.10, 0.22, 0, 1);
-        propsRef.current.style.opacity = pr.toFixed(3);
-        propsRef.current.style.pointerEvents = pr > 0.6 ? 'auto' : 'none';
+        const landed = window.__propsLanded !== false;
+        propsRef.current.style.opacity = landed ? '1' : '0';
+        propsRef.current.style.pointerEvents = landed ? 'auto' : 'none';
       }
 
       // nav + titles reveal at the end
@@ -212,9 +212,14 @@ export default function Hero() {
     };
   }, []);
 
-  // fade the loader out once every frame is in
+  // the first-load screen (BootLoader) waits on the preview pass of the sequence
   useEffect(() => {
-    if (ready && loaderRef.current) loaderRef.current.classList.add('is-done');
+    window.dispatchEvent(new CustomEvent('hero-progress', { detail: progress }));
+  }, [progress]);
+  useEffect(() => {
+    if (!ready) return;
+    window.__heroReady = true;
+    window.dispatchEvent(new Event('hero-ready'));
   }, [ready]);
 
   return (
@@ -261,7 +266,7 @@ export default function Hero() {
             <p className="hero-kicker">Senior UX &amp; Product Designer</p>
             <h1 className="hero-title">
               <span className="line">I bring messy</span>
-              <span className="line">problems into <em className="accent"><span className="swash">F</span>ocus.</em></span>
+              <span className="line">problems into <Lettered>Focus.</Lettered></span>
             </h1>
             <p className="hero-sub">
               5+ years of it, across enterprise dashboards, web and mobile apps and AI-powered
@@ -270,11 +275,6 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* real-progress loader over the sequence preload */}
-        <div className="hero-loader" ref={loaderRef}>
-          <span className="hero-loader-mark">an5had</span>
-          <span className="hero-loader-pct">{Math.round(progress * 100)}%</span>
-        </div>
       </div>
     </section>
   );

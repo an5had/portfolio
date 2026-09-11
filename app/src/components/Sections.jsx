@@ -1,4 +1,5 @@
 import Reveal from './Reveal.jsx';
+import Lettered from './Lettered.jsx';
 import { CAPABILITIES, TOOLS, FACTS, SOCIALS, EXPERIENCE, CLIENTS, PORTRAIT } from '../data.js';
 
 const MARQUEE = ['Enterprise Platforms', 'Data & Dashboards', 'AI-Powered Products', 'Design Systems', 'UX Research', 'Product Strategy'];
@@ -37,7 +38,7 @@ export function Capabilities() {
   return (
     <section className="capabilities container" id="capabilities">
       <Reveal as="p" className="eyebrow">How I work</Reveal>
-      <Reveal as="h2" className="section-title" delay={0.05}>From fuzzy problem to shipped product.</Reveal>
+      <Reveal as="h2" className="section-title" delay={0.05}>From fuzzy problem to shipped <Lettered>Product.</Lettered></Reveal>
       <div className="cap-grid">
         {CAPABILITIES.map((c, k) => (
           <Reveal className="cap" key={c.no} delay={k * 0.08}>
@@ -93,7 +94,7 @@ export function Experience() {
   return (
     <section className="experience container" id="experience">
       <Reveal as="p" className="eyebrow">Where I’ve worked</Reveal>
-      <Reveal as="h2" className="section-title" delay={0.05}>5+ years, four teams.</Reveal>
+      <Reveal as="h2" className="section-title" delay={0.05}>5+ years, four <Lettered>Teams.</Lettered></Reveal>
       <ul className="timeline">
         {EXPERIENCE.map((e, k) => (
           <Reveal as="li" className="tl-item" key={e.org} delay={k * 0.06}>
@@ -115,7 +116,7 @@ export function Contact() {
       <div className="container">
         <Reveal as="p" className="eyebrow">Say hello</Reveal>
         <Reveal as="h2" className="contact-lead" delay={0.05}>
-          Tell me what you’re building.
+          Tell me what you’re <Lettered note="I reply within a day">Building.</Lettered>
         </Reveal>
         <Reveal as="p" className="contact-sub" delay={0.1}>
           A product to design, a role to fill, or just a good design conversation, I’m glad you

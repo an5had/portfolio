@@ -1,4 +1,5 @@
 import PageHeader from '../components/PageHeader.jsx';
+import Lettered from '../components/Lettered.jsx';
 import { Contact } from '../components/Sections.jsx';
 
 export default function ContactPage() {
@@ -6,7 +7,7 @@ export default function ContactPage() {
     <>
       <PageHeader
         kicker="Contact"
-        title="Let’s talk."
+        title={<>Let’s <Lettered>Talk.</Lettered></>}
         sub="Collaborations, roles, or just to say hello. Whatever it is, this is a good place to start."
       />
       <Contact />

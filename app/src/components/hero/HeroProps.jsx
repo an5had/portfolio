@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { HERO, coverPoint, stageSize } from './heroMap.js';
 
-const PROPS = [
+export const PROPS = [
   {
     id: 'builder',
     src: '/props/ai-native-builder.webp',

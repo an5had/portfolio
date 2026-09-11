@@ -1,4 +1,5 @@
 import PageHeader from '../components/PageHeader.jsx';
+import Lettered from '../components/Lettered.jsx';
 import Explorations from '../components/Explorations.jsx';
 import { Contact } from '../components/Sections.jsx';
 import Reveal from '../components/Reveal.jsx';
@@ -11,7 +12,7 @@ export default function ArticlesPage() {
     <>
       <PageHeader
         kicker="Articles & explorations"
-        title="Writing, hot takes and side quests."
+        title={<>Writing, hot takes and side <Lettered>Quests.</Lettered></>}
         sub="Notes on enterprise UX, design systems and AI-powered products, plus the visual things I build when no one’s briefing me."
       />
 
