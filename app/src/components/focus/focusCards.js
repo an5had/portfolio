@@ -53,7 +53,7 @@ export const R_CLEAN = 0.12;
 
 // MAP stop: what the audit finds
 export const AUDIT = [
-  { n: '01', label: 'Same KPI, three formats', ids: ['kpi-rev', 'dup-rev-a', 'dup-rev-b'], anchor: 'dup-rev-a' },
+  { n: '01', label: 'Same data, three formats', ids: ['kpi-rev', 'dup-rev-a', 'dup-rev-b'], anchor: 'dup-rev-a' },
   { n: '02', label: 'Two navigation patterns', ids: ['nav', 'sidenav'], anchor: 'sidenav' },
   { n: '03', label: 'No colour rules', ids: ['chart-line', 'chart-bars', 'donut'], anchor: 'chart-bars' },
   { n: '04', label: 'Shadow spreadsheet', ids: ['xlsx'], anchor: 'xlsx' },

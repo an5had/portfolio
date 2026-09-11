@@ -5,8 +5,8 @@
 export const STOPS = [
   {
     id: 'mess', label: 'MESS', at: 0,
-    title: 'Same number. Three answers.',
-    body: 'Duplicated KPIs, clashing charts, two ways to navigate.',
+    title: 'Three ways to do one thing.',
+    body: 'Duplicated flows, clashing styles, no single source of truth.',
   },
   {
     id: 'map', label: 'MAP', at: 0.35,
@@ -16,12 +16,12 @@ export const STOPS = [
   {
     id: 'system', label: 'SYSTEM', at: 0.7,
     title: 'One set of rules.',
-    body: 'KPI modules, chart rules and one layout grid.',
+    body: 'Components, patterns and one grid, shared across web and mobile.',
   },
   {
     id: 'focus', label: 'FOCUS', at: 1,
     title: 'Clarity you can measure.',
-    body: 'The BI design system I designed for Wheels Up unified 60+ dashboards: a reported 40% usability boost and 25% faster report generation.',
+    body: '60+ dashboards unified at Wheels Up. A productivity app that hit #6 on the App Store. Hiring, travel and loyalty products in between.',
   },
 ];
 

@@ -1,13 +1,12 @@
 /* "Hand me the mess." — the section after the hero.
    Continues the hero's photographic, hands-on feel: a lens ring racks focus on a pile of
    out-of-focus dashboard fragments. Four stops tell the story in a few words each (mess → map →
-   system → focus) and land on real Wheels Up numbers.
+   system → focus) and land on real outcomes across the range of work, not just dashboards.
 
    Pinned like the hero: scroll turns the ring, and grabbing the ring scrolls the page, so there's
    one source of truth and nobody gets stuck. All copy is real DOM text (SEO/GEO); the board is
    decoration. Reduced motion: no pin, it starts in focus and the ring still works. */
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import FocusScene from './focus/FocusScene.jsx';
 import FocusRing from './focus/FocusRing.jsx';
 import { STOPS, HOLD, stopIndex, phases, clamp01 } from './focus/focusMath.js';
@@ -284,11 +283,6 @@ export default function FocusSection() {
                 <span className="fc-no">{String(i + 1).padStart(2, '0')} / 04 · {s.label.toLowerCase()}</span>
                 <h3>{s.title}</h3>
                 <p>{s.body}</p>
-                {s.id === 'focus' && (
-                  <Link className="fc-cta" to="/works/wheelsup" data-cursor="link" tabIndex={i === active ? 0 : -1}>
-                    See the Wheels Up case study <span aria-hidden="true">→</span>
-                  </Link>
-                )}
               </li>
             ))}
           </ol>

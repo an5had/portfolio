@@ -5,6 +5,7 @@
    forward. Crossing a stop gives a tiny detent click (and a haptic tick where supported); release
    settles on the nearest stop. Also a proper slider for keyboard + screen readers. */
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { ringFeedback, listenForAudioUnlock } from './ringFeedback.js';
 
 const THROW = 150;          // degrees of barrel rotation from the first stop to the last
 const STEP = 3.2;           // knurl pitch, degrees
@@ -12,24 +13,7 @@ const DEG = Math.PI / 180;
 
 const lit = (a) => 0.12 + 0.62 * Math.pow(Math.max(0, Math.cos(a + 0.42)), 1.2) + 0.5 * Math.pow(Math.max(0, Math.cos(a + 0.6)), 34);
 
-let actx = null;
-function detent() {
-  try {
-    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-    if (actx.state === 'suspended') actx.resume();
-    const t = actx.currentTime;
-    const o = actx.createOscillator();
-    o.type = 'triangle';
-    o.frequency.setValueAtTime(2600, t);
-    o.frequency.exponentialRampToValueAtTime(700, t + 0.03);
-    const g = actx.createGain();
-    g.gain.setValueAtTime(0.045, t);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.045);
-    o.connect(g).connect(actx.destination);
-    o.start(t); o.stop(t + 0.05);
-  } catch { /* no audio */ }
-  if (navigator.vibrate) navigator.vibrate(6);
-}
+const TICK = 5;             // engraved tick pitch, degrees — one ratchet click per tick passed
 
 function spacedWidth(ctx, s, sp) { let w = 0; for (const ch of s) w += ctx.measureText(ch).width + sp; return w - sp; }
 
@@ -131,6 +115,7 @@ const FocusRing = forwardRef(function FocusRing({ stops, onScrubStart, onScrub, 
       paint();
     };
     fit();
+    listenForAudioUnlock();
     const ro = new ResizeObserver(fit);
     ro.observe(wrap);
     document.fonts?.ready?.then(() => paint());
@@ -142,6 +127,18 @@ const FocusRing = forwardRef(function FocusRing({ stops, onScrubStart, onScrub, 
     draw(v) {
       const s = st.current;
       if (Math.abs(v - s.drawn) < 0.00015) return;
+      /* feedback from the barrel's actual motion, so drag, scroll, snapping and keyboard all tick
+         alike: a detent when a stop is reached or passed, otherwise a click per tick mark crossed */
+      if (s.drawn >= 0) {
+        const prev = s.drawn;
+        const hitStop = stops.some((stop) => (prev < stop.at && v >= stop.at) || (prev > stop.at && v <= stop.at));
+        const tick = Math.floor((v * THROW) / TICK + 1e-6);
+        if (hitStop) ringFeedback('stop');
+        else if (tick !== s.tick) ringFeedback(tick % 5 === 0 ? 'major' : 'minor');
+        s.tick = tick;
+      } else {
+        s.tick = Math.floor((v * THROW) / TICK + 1e-6);
+      }
       s.v = v; s.drawn = v;
       paint();
       wrapRef.current?.setAttribute('aria-valuenow', String(Math.round(v * 100)));
@@ -167,7 +164,6 @@ const FocusRing = forwardRef(function FocusRing({ stops, onScrubStart, onScrub, 
     const dtt = Math.max(1, now - d.lastT);
     d.vel = d.vel * 0.6 + (-(e.clientX - d.lastX) / pxPerUnit() / (dtt / 1000)) * 0.4;
     d.moved = Math.max(d.moved, Math.abs(e.clientX - d.x0));
-    for (const stop of stops) if ((d.v - stop.at) * (v - stop.at) < 0 || (v === stop.at && d.v !== stop.at)) detent();
     d.v = v; d.lastX = e.clientX; d.lastT = now;
     onScrub?.(v);
   };

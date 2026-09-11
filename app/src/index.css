@@ -290,9 +290,6 @@ img { display: block; max-width: 100%; }
 .fc-no { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dim); font-variant-numeric: tabular-nums; }
 .focus-captions h3 { font-weight: 500; font-size: clamp(18px, 1.5vw, 23px); letter-spacing: -0.02em; line-height: 1.2; margin: 0.45rem 0 0.4rem; }
 .focus-captions p { color: var(--muted); font-weight: 300; font-size: clamp(13.5px, 0.95vw, 15px); line-height: 1.55; max-width: 34ch; }
-.fc-cta { display: inline-flex; gap: 8px; margin-top: 12px; font-size: 13px; font-weight: 500; color: var(--fg);
-  padding-bottom: 3px; border-bottom: 1px solid var(--accent); transition: gap 0.3s var(--ease), color 0.3s; }
-.fc-cta:hover { gap: 12px; color: var(--accent); }
 
 /* MAP: audit outlines + tags (positioned from the 3D cards in FocusScene) */
 .focus-audit { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; opacity: 0; overflow: visible; }
@@ -346,29 +343,38 @@ img { display: block; max-width: 100%; }
 @keyframes hintNudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-4px); } }
 
 @media (max-width: 899px) {
-  .focus-stage { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr) auto auto;
+  /* phone: one centred column — head, board, caption, ring — with even gaps, vertically centred
+     in the space below the nav. The wrappers dissolve into the stage grid. The board slot gets a
+     fixed height (no 1fr stretch) so the stack stays compact instead of drifting to the edges. */
+  .focus-stage { grid-template-columns: 1fr; grid-template-rows: auto auto auto auto;
     grid-template-areas: "head" "slot" "steps" "ring";
-    padding: 80px 20px calc(12px + env(safe-area-inset-bottom, 0px)); }
-  /* phone: head, board, caption, ring — the wrappers dissolve into the stage grid */
+    align-content: center; justify-items: center; row-gap: clamp(14px, 2.8svh, 30px);
+    padding: 76px 20px calc(16px + env(safe-area-inset-bottom, 0px)); text-align: center; }
   .focus-copy, .focus-view { display: contents; }
   .focus-head { grid-area: head; z-index: 3; }
-  .focus-slot { grid-area: slot; }
-  .focus-steps { grid-area: steps; z-index: 3; }
-  .focus-ring-wrap { grid-area: ring; width: 100%; }
-  .focus-glow { background: radial-gradient(70% 45% at 50% 42%, rgba(47, 93, 168, 0.14), transparent 70%); }
+  .focus-slot { grid-area: slot; width: 100%; height: min(calc((100vw - 40px) / 1.4), 32svh); margin: 0; flex: none; }
+  .focus-steps { grid-area: steps; z-index: 3; padding-top: 0; }
+  .focus-ring-wrap { grid-area: ring; width: min(420px, 100%); padding-top: 10px; }
+  .focus-glow { background: radial-gradient(70% 45% at 50% 48%, rgba(47, 93, 168, 0.14), transparent 70%); }
   .focus-title { font-size: clamp(32px, 9.5vw, 46px); margin-top: 0.5rem; }
-  .focus-slot { margin: 10px 0 8px; }
-  .focus-steps { padding-top: 0; }
-  .focus-dots { margin-bottom: 8px; }
+  .focus-dots { justify-content: center; margin-bottom: 8px; }
   .focus-dots button { padding: 6px 0; }
   .fc-no { font-size: 10px; }
   .focus-captions h3 { font-size: 19px; margin: 0.35rem 0 0.35rem; }
-  .focus-captions p { font-size: 13.5px; }
-  .fc-cta { margin-top: 10px; font-size: 13px; }
+  .focus-captions p { font-size: 13.5px; max-width: 32ch; margin: 0 auto; }
   .fring { height: 50px; }
   .vf { width: calc(min(100cqw, 100cqh * 1.4763) * 0.98); }
   .vf-note { display: none; }
   .audit-tag { font-size: 10.5px; }
+}
+/* short phones (iPhone SE / mini): trim the board and type so the centred stack keeps its margins */
+@media (max-width: 899px) and (max-height: 720px) {
+  .focus-stage { row-gap: 12px; padding-top: 70px; }
+  .focus-slot { height: min(calc((100vw - 40px) / 1.5), 28svh); }
+  .focus-title { font-size: clamp(28px, 8.4vw, 38px); margin-top: 0.35rem; }
+  .focus-captions h3 { font-size: 17.5px; }
+  .focus-captions p { font-size: 13px; line-height: 1.45; }
+  .fring { height: 46px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .focus { height: auto; }
