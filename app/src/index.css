@@ -110,8 +110,15 @@ img { display: block; max-width: 100%; }
 .hero-scroll { position: relative; }
 /* scale(1.04) + radius from first paint, so there's no jump before JS takes over
    (Hero.jsx drives the exit scale; see the note there) */
-.hero-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #000;
-  border-radius: 32px; transform: scale(1.04); transform-origin: 50% 50%; will-change: transform; }
+/* height: 100lvh — the LARGE viewport. On iPhone Safari (floating, translucent toolbars) the
+   visible screen can be taller than 100vh, leaving a band of page background; lvh always
+   fills. (100vh stays as the fallback for browsers without lvh.)
+   clip-path alongside border-radius: WebKit does not clip a composited WebGL canvas with
+   border-radius + overflow:hidden alone, so on iOS the card's corners rendered square.
+   clip-path IS applied to the canvas layer. Hero.jsx keeps both radii in sync as it scales. */
+.hero-stage { position: sticky; top: 0; height: 100vh; height: 100lvh; overflow: hidden; background: #000;
+  border-radius: 32px; clip-path: inset(0 round 32px);
+  transform: scale(1.04); transform-origin: 50% 50%; will-change: transform; }
 .hero-stage .hero-gl, .hero-stage canvas { position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; }
 
 /* draggable props on the desk */

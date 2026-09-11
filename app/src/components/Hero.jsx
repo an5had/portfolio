@@ -70,7 +70,9 @@ export default function Hero() {
 
     const frame = () => {
       const rect = section.getBoundingClientRect();
-      const scrollable = section.offsetHeight - window.innerHeight || 1;
+      // pin length = track height minus the STAGE's height (100lvh), not window.innerHeight:
+      // on iOS they differ by the toolbar, which would put the release point off by that much
+      const scrollable = section.offsetHeight - stageSize().sh || 1;
       const p = clamp(-rect.top / scrollable, 0, 1);
       progressRef.current = p;
 
@@ -91,12 +93,16 @@ export default function Hero() {
          No opacity or clip change. rect.bottom === vh at release, so `past` is
          exactly 0 for the whole pinned sequence. */
       if (stageRef.current) {
-        const vh = window.innerHeight, sw = stageSize().sw;
+        // stage height, not window height: the sticky stage releases when the section's bottom
+        // reaches the stage's own bottom (100lvh), which on iOS is below window.innerHeight
+        const { sw, sh: vh } = stageSize();
         const past = Math.max(0, vh - rect.bottom);
         const s = 1.04 - 0.54 * clamp(past / (vh * 1.574), 0, 1);
         const st = stageRef.current.style;
+        const R = Math.round(Math.min(32, Math.max(18, sw * 0.021)));
         st.transform = `scale(${s.toFixed(4)})`;
-        st.borderRadius = `${Math.round(Math.min(32, Math.max(18, sw * 0.021)))}px`;
+        st.borderRadius = `${R}px`;
+        st.clipPath = `inset(0 round ${R}px)`;   // iOS: border-radius alone won't clip the WebGL canvas
       }
 
       // circular text ring: reveal → hold → fade
@@ -177,7 +183,7 @@ export default function Hero() {
       if (!lenis) { if (tries++ < 40) setTimeout(setupSnap, 50); return; }
       const { default: Snap } = await import('lenis/snap');
       snap = new Snap(lenis, { type: 'proximity', velocityThreshold: 0.6, duration: 0.9 });
-      const scrollable = section.offsetHeight - window.innerHeight;
+      const scrollable = section.offsetHeight - stageSize().sh;
       snap.add(Math.round(section.offsetTop + HERO.snapAt * scrollable));
     };
     setupSnap();
