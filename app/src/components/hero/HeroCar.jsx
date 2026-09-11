@@ -6,7 +6,7 @@
      respawns at its default spot.
    Sound is generated with Web Audio (no asset) and only after a user gesture. */
 import { useEffect, useRef } from 'react';
-import { HERO, coverPoint, clamp } from './heroMap.js';
+import { HERO, coverPoint, clamp, stageSize } from './heroMap.js';
 
 /* Right end stops short of the Apple Pencil, whose tip reaches ~y 0.83 around
    x 0.72–0.75; running to 0.76 drove the car straight through it. The car fades
@@ -100,7 +100,7 @@ export default function HeroCar({ progressRef }) {
       }
       const t = Math.min(1, (now - start) / CROSS_MS);
       const u = dir > 0 ? t : 1 - t;
-      const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
+      const { sw, sh } = stageSize();
       const scale = Math.max(sw / HERO.videoW, sh / HERO.videoH);
       const dw = HERO.videoW * scale;
 

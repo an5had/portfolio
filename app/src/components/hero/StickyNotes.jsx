@@ -7,7 +7,7 @@
    Driven imperatively (update(frame)) from Hero's rAF: no React renders per frame. */
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import TRACK from './sticky-track.json';
-import { HERO } from './heroMap.js';
+import { HERO, stageSize } from './heroMap.js';
 
 // entry = [cx, cy, w, h, a, vis, spd] | 0 — see TRACK.fields
 function place(el, rec, sw, sh) {
@@ -34,7 +34,7 @@ const StickyNotes = forwardRef(function StickyNotes(_props, ref) {
 
   useImperativeHandle(ref, () => ({
     update(frame) {
-      const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
+      const { sw, sh } = stageSize();
       place(heyRef.current, TRACK.y[frame], sw, sh);
       place(nameRef.current, TRACK.o[frame], sw, sh);
     },

@@ -3,7 +3,7 @@
    cover-fit maths as the ring, so they stay on the mat at any viewport aspect.
    Once the visitor drags one, it keeps its own position (we stop re-anchoring it). */
 import { useCallback, useEffect, useRef } from 'react';
-import { HERO, coverPoint } from './heroMap.js';
+import { HERO, coverPoint, stageSize } from './heroMap.js';
 
 const PROPS = [
   {
@@ -45,7 +45,7 @@ export default function HeroProps() {
   const place = useCallback((p) => {
     const el = els.current[p.id];
     if (!el) return;
-    const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
+    const { sw, sh } = stageSize();
     const scale = Math.max(sw / HERO.videoW, sh / HERO.videoH);
     const dw = HERO.videoW * scale;
     const pt = coverPoint(p.vx, p.vy, sw, sh);

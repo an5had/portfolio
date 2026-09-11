@@ -34,11 +34,25 @@ export const HERO = {
 /* Map a point given in normalized video-frame coords (0..1) to on-screen pixels,
    accounting for object-fit: cover. Keeps the ring glued to the sticky on any
    viewport aspect. */
+/* The size the footage is ACTUALLY drawn at: the hero stage's own layout box (the canvas fills
+   it). Every overlay's cover-fit maths must use this — never a window measurement:
+   - window.innerWidth includes the desktop scrollbar; the canvas doesn't (~15px drift right).
+   - documentElement.clientHeight on iOS Safari is the toolbar-shrunk visible viewport, while the
+     stage is 100vh = the LARGE viewport. On a portrait phone the cover-fit is height-driven, so
+     that mismatch both offsets and mis-scales every overlay (ink off-centre on the notes).
+   Layout dims (clientWidth/Height) ignore the stage's scale transform, which is what we want:
+   overlays live inside the same transformed stage as the canvas. */
+let stageEl = null;
+export function stageSize() {
+  if (typeof document === 'undefined') return { sw: 1920, sh: 1080 };
+  if (!stageEl || !stageEl.isConnected) stageEl = document.querySelector('.hero-stage');
+  if (stageEl && stageEl.clientWidth) return { sw: stageEl.clientWidth, sh: stageEl.clientHeight };
+  return { sw: document.documentElement.clientWidth, sh: document.documentElement.clientHeight };
+}
+
 /* Same cover-fit mapping for a rect given in video-frame fractions. Returns px
    plus a scaled corner radius, so an overlay lands exactly on the iPad screen.
-   sw/sh must be the STAGE's size — document.documentElement.clientWidth/Height — never
-   window.innerWidth: that includes the scrollbar, the canvas doesn't, and the ~15px gap shifts
-   every overlay right of the footage (ink off-centre on the notes, blue showing beside the panel). */
+   Pass sw/sh from stageSize(). */
 export function coverRect(rect, sw, sh) {
   const scale = Math.max(sw / HERO.videoW, sh / HERO.videoH);
   const dw = HERO.videoW * scale, dh = HERO.videoH * scale;

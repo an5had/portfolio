@@ -11,7 +11,7 @@ import HeroCar from './hero/HeroCar.jsx';
 import RingText from './hero/RingText.jsx';
 import useTieredSequence from './hero/useTieredSequence.js';
 import StickyNotes from './hero/StickyNotes.jsx';
-import { HERO, clamp, remap, coverPoint, coverRect, frameForProgress } from './hero/heroMap.js';
+import { HERO, clamp, remap, coverPoint, coverRect, frameForProgress, stageSize } from './hero/heroMap.js';
 
 export default function Hero() {
   const sectionRef = useRef(null);
@@ -39,7 +39,7 @@ export default function Hero() {
   const compactRef = useRef(false);
   useEffect(() => {
     const check = () => {
-      const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
+      const { sw, sh } = stageSize();
       const r = coverRect(HERO.screen, sw, sh);
       const fits = r.x >= 4 && r.x + r.w <= sw - 4 && r.w >= 380;
       compactRef.current = !fits;
@@ -89,7 +89,7 @@ export default function Hero() {
          No opacity or clip change. rect.bottom === vh at release, so `past` is
          exactly 0 for the whole pinned sequence. */
       if (stageRef.current) {
-        const vh = window.innerHeight, sw = document.documentElement.clientWidth;
+        const vh = window.innerHeight, sw = stageSize().sw;
         const past = Math.max(0, vh - rect.bottom);
         const s = 1.04 - 0.54 * clamp(past / (vh * 1.574), 0, 1);
         const st = stageRef.current.style;
@@ -109,7 +109,7 @@ export default function Hero() {
       // keep the ring glued to the sticky's on-screen position (cover-fit aware),
       // and scale it with the frame so it encircles the sticky on every device
       if (ringWrapRef.current && ring > 0.001) {
-        const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
+        const { sw, sh } = stageSize();
         const dw = HERO.videoW * Math.max(sw / HERO.videoW, sh / HERO.videoH);
         const pt = coverPoint(HERO.stickyVX, HERO.stickyVY, sw, sh);
         ringWrapRef.current.style.left = `${pt.x}px`;
@@ -135,7 +135,7 @@ export default function Hero() {
       if (titlesRef.current) {
         const el = titlesRef.current;
         const s = el.style;
-        const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
+        const { sw, sh } = stageSize();
         if (compactRef.current) {
           // detached: let CSS lay it out as a readable bottom panel
           el.classList.add('is-detached');

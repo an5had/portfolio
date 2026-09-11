@@ -3,7 +3,7 @@
    ~42% of equivalent WebP). A visitor downloads the tiny `lq` pass first, then ONE tier: the
    smallest that covers the hero's real physical pixel width — the sharpest frames their display
    can actually show, never more. */
-import { HERO } from './heroMap.js';
+import { HERO, stageSize } from './heroMap.js';
 
 export const PREVIEW_TIER = 'lq';            // 640px, instant-interactive pass
 export const TIERS = [
@@ -15,7 +15,7 @@ export const TIERS = [
 
 export function pickTier() {
   if (typeof window === 'undefined') return 'fhd';
-  const sw = document.documentElement.clientWidth, sh = document.documentElement.clientHeight;
+  const { sw, sh } = stageSize();
   // cover-fit width of the frame in CSS px, × the pinned stage scale (1.04), × device pixels
   const dw = HERO.videoW * Math.max(sw / HERO.videoW, sh / HERO.videoH);
   let need = dw * 1.04 * (window.devicePixelRatio || 1);
