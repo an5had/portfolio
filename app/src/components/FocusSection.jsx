@@ -256,7 +256,7 @@ export default function FocusSection() {
           )))}
         </svg>
         {AUDIT.map((g, i) => (
-          <div className="audit-tag" key={g.n} ref={(el) => { auditRefs.current.tags[i] = el; }} aria-hidden="true">
+          <div className="audit-tag" data-note-ignore key={g.n} ref={(el) => { auditRefs.current.tags[i] = el; }} aria-hidden="true">
             <b>{g.n}</b>{g.label}
           </div>
         ))}
@@ -269,7 +269,7 @@ export default function FocusSection() {
           </h2>
         </header>
 
-        <div className="focus-steps">
+        <div className="focus-steps" data-note-avoid>
           <div className="focus-dots">
             {STOPS.map((s, i) => (
               <button
@@ -296,7 +296,7 @@ export default function FocusSection() {
         </div>
 
         <div className="focus-view">
-        <div className="focus-slot" ref={slotRef} aria-hidden="true">
+        <div className="focus-slot" ref={slotRef} aria-hidden="true" data-note-avoid>
           <div className="vf">
             <i /><i /><i /><i />
             <span className="vf-mode"><span className="vf-mf">MF</span><span className="vf-af">AF ● In focus</span></span>
@@ -304,7 +304,7 @@ export default function FocusSection() {
           </div>
         </div>
 
-        <div className="focus-ring-wrap">
+        <div className="focus-ring-wrap" data-note-avoid>
           <FocusRing
             ref={ringRef}
             stops={STOPS}

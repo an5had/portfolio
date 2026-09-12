@@ -294,11 +294,6 @@ img { display: block; max-width: 100%; }
 .hero-screen.is-detached .hero-title { font-size: clamp(28px, 8.6vw, 44px); line-height: 1.03; }
 .hero-screen.is-detached .hero-sub { font-size: clamp(13px, 3.7vw, 16px); margin-top: 0.9rem; }
 
-/* sequence preload loader */
-.hero-loader { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #06070a; transition: opacity 0.7s ease, visibility 0.7s; }
-.hero-loader.is-done { opacity: 0; visibility: hidden; }
-.hero-loader-mark { font-size: clamp(22px, 3vw, 34px); font-weight: 600; letter-spacing: -0.02em; color: var(--fg, #f4f4f2); }
-.hero-loader-pct { font-size: 12px; letter-spacing: 0.28em; color: var(--muted, #8a9098); font-variant-numeric: tabular-nums; }
 
 
 @media (prefers-reduced-motion: reduce) {
@@ -954,45 +949,24 @@ img { display: block; max-width: 100%; }
 .lettered, .serif-accent, .hero-title .accent { position: relative; font-family: var(--serif); font-style: normal; font-weight: 400;
   color: var(--accent); white-space: nowrap; }
 
-/* Margin note (Lettered note=…), after Zero's "AI Native": Caveat in grey beside the word, with a
-   looping hand-drawn arrow that draws itself in (stroke-dashoffset on a pathLength=1 path), then the
-   words fade up. Sized in em so it scales with whichever heading it sits on. */
-.hand-note { position: absolute; left: calc(100% + 0.06em); bottom: 0.1em; width: 1.05em; height: 0.72em;
-  color: var(--dim); pointer-events: none; }
-.hand-arrow { display: block; width: 100%; height: 100%; overflow: visible; }
-.hand-arrow path { stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-  stroke-dasharray: 1; stroke-dashoffset: 1; }
+/* Margin note (Lettered note=…), after Zero's "AI Native": Caveat in grey near the word, with a
+   hand-drawn arrow that draws itself in (stroke-dashoffset on pathLength=1 paths), then the words
+   fade up. Lettered measures the page and places both in px around the word (utils/handNote.js);
+   until it has a spot that overlaps nothing, the note stays invisible. */
+.hand-note { position: absolute; left: 0; top: 0; width: 0; height: 0; color: var(--dim); pointer-events: none; visibility: hidden; }
+.hand-note[data-at] { visibility: visible; }
+.hand-arrow { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; }
+.hand-arrow path { stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
 .is-drawn .hand-arrow path:first-child { stroke-dashoffset: 0; transition: stroke-dashoffset 0.9s 0.3s cubic-bezier(0.6, 0, 0.3, 1); }
 .is-drawn .hand-arrow path:last-child { stroke-dashoffset: 0; transition: stroke-dashoffset 0.25s 1.15s ease-out; }
-.hand-note::after { content: attr(data-note); position: absolute; left: 86%; bottom: 76%;
-  font-family: var(--script); font-weight: 600; font-size: 0.36em; line-height: 1; letter-spacing: -0.01em;
-  white-space: nowrap; color: var(--dim); opacity: 0; transform: rotate(-6deg) translateY(0.3em); transform-origin: left bottom;
-  transition: opacity 0.5s 0.85s ease, transform 0.6s 0.85s var(--ease); }
-.is-drawn .hand-note::after { opacity: 1; transform: rotate(-6deg); }
-.hand-note--left { left: auto; right: calc(100% + 0.06em); }
-.hand-note--left .hand-arrow { transform: scaleX(-1); }
-.hand-note--left::after { left: auto; right: 86%; transform-origin: right bottom; transform: rotate(6deg) translateY(0.3em); }
-.is-drawn .hand-note--left::after { transform: rotate(6deg); }
-@media (max-width: 1100px) { .hand-note { display: none; } }
+.hand-text { position: absolute; font-family: var(--script); font-style: normal; font-weight: 600; font-size: 0.36em; line-height: 1.2;
+  letter-spacing: -0.01em; white-space: nowrap; color: var(--dim); opacity: 0; transform-origin: 50% 50%;
+  transform: translateY(0.3em) rotate(var(--tilt, -6deg)); transition: opacity 0.5s 0.85s ease, transform 0.6s 0.85s var(--ease); }
+.hand-text::after { content: attr(data-note); }
+.is-drawn .hand-text { opacity: 1; transform: rotate(var(--tilt, -6deg)); }
 .swash { display: inline-block; font-family: var(--swash); font-weight: 400; font-size: 1.5em; line-height: 0.5;
   letter-spacing: 0; margin-right: -0.06em; vertical-align: -0.04em; }
 
-/* Margin note, after Zero's "AI Native": Caveat in grey, tilted, with an arrow that draws on.
-   Text comes from data-note via ::after, so it stays out of the heading's real text. */
-.has-note { position: relative; }
-/* sits to the right of the word, arrow curling back down into it */
-.has-note::after { content: attr(data-note); position: absolute; left: calc(100% + 0.5em); bottom: 0.78em;
-  font-family: var(--script); font-weight: 600; font-size: 0.38em; line-height: 0.9; letter-spacing: -0.02em;
-  color: var(--dim); white-space: nowrap; transform: rotate(-7deg); transform-origin: left bottom; pointer-events: none; }
-.has-note::before { content: ""; position: absolute; left: calc(100% - 0.02em); bottom: 0.3em; width: 0.62em; height: 0.48em;
-  background-color: var(--dim); pointer-events: none;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M38 5C30 3 17 7 9 25'/%3E%3Cpath d='M3.5 19.5 9 26.5l6.2-5'/%3E%3C/svg%3E") center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 32' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M38 5C30 3 17 7 9 25'/%3E%3Cpath d='M3.5 19.5 9 26.5l6.2-5'/%3E%3C/svg%3E") center / contain no-repeat; }
-.is-live .has-note::before { animation: noteArrow 0.9s 0.55s var(--ease) both; }
-.is-live .has-note::after { animation: noteText 0.7s 0.25s var(--ease) both; }
-@keyframes noteArrow { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0 0 0 0); } }
-@keyframes noteText { from { opacity: 0; transform: rotate(-7deg) translateY(6px); } to { opacity: 1; transform: rotate(-7deg); } }
-@media (max-width: 1100px) { .has-note::before, .has-note::after { display: none; } }
 .eyebrow, .fc-no, .hero-kicker, .hero-screen .hero-kicker, .case-client, .clients-eyebrow, .cs-kicker, .cs-eyebrow,
 .cs-fact span, .cs-next-label, .article-meta, .tl-period, .about-facts b, .case-meta b, .coa-facts span,
 .certify-field span, .cs-lock-eyebrow, .vf-mode, .vf-note, .fring-hint, .scroll-pill, .case-no, .gallery-no,
@@ -1003,31 +977,20 @@ img { display: block; max-width: 100%; }
    Four big soft colour fields drifting behind a film-grain layer = a moving, textured mesh.
    The red mark shakes in the middle; the desk props float around it until they fly to the desk. */
 html.is-booting, html.is-booting body { overflow: hidden; }
-.boot { position: fixed; inset: 0; z-index: 5000; overflow: hidden; background-color: var(--boot-base);
-  --boot-base: #07070a;
-  --m1: rgba(47, 69, 224, 0.55); --m2: rgba(255, 122, 64, 0.26); --m3: rgba(22, 104, 132, 0.42); --m4: rgba(126, 82, 214, 0.3);
+/* soft violet in both themes; the WebGL blob (BootBlob) folds a violet body and white streaks over
+   it. The flat colour shows instantly, before the canvas has its first frame. */
+.boot { position: fixed; inset: 0; z-index: 5000; overflow: hidden; background-color: #9c8cff;
   transition: background-color 0.9s var(--ease); }
-[data-theme="light"] .boot { --boot-base: #f3f0eb;
-  --m1: rgba(47, 69, 224, 0.26); --m2: rgba(255, 158, 110, 0.42); --m3: rgba(140, 200, 196, 0.45); --m4: rgba(186, 172, 255, 0.5); }
-.boot-mesh { position: absolute; inset: -25%; transition: opacity 0.9s var(--ease); }
-.boot-mesh i { position: absolute; width: 80vmax; height: 80vmax; border-radius: 50%; will-change: transform; }
-.boot-mesh i:nth-child(1) { left: -8%; top: -18%; background: radial-gradient(closest-side, var(--m1), transparent); animation: bootDrift1 17s ease-in-out infinite alternate; }
-.boot-mesh i:nth-child(2) { right: -12%; top: 4%; background: radial-gradient(closest-side, var(--m2), transparent); animation: bootDrift2 21s ease-in-out infinite alternate; }
-.boot-mesh i:nth-child(3) { left: 12%; bottom: -30%; background: radial-gradient(closest-side, var(--m3), transparent); animation: bootDrift3 19s ease-in-out infinite alternate; }
-.boot-mesh i:nth-child(4) { right: 6%; bottom: -12%; width: 60vmax; height: 60vmax; background: radial-gradient(closest-side, var(--m4), transparent); animation: bootDrift4 23s ease-in-out infinite alternate; }
-@keyframes bootDrift1 { to { transform: translate(22vw, 16vh) scale(1.2); } }
-@keyframes bootDrift2 { to { transform: translate(-26vw, 18vh) scale(0.85); } }
-@keyframes bootDrift3 { to { transform: translate(18vw, -22vh) scale(1.15); } }
-@keyframes bootDrift4 { to { transform: translate(-16vw, -14vh) scale(1.25); } }
-.boot-grain { position: absolute; inset: -50%; opacity: 0.22; mix-blend-mode: overlay; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+.boot-blob { position: absolute; inset: 0; transition: opacity 0.9s var(--ease); animation: bootBlobIn 1.2s var(--ease) both; }
+@keyframes bootBlobIn { from { opacity: 0; } to { opacity: 1; } }
+.boot-grain { position: absolute; inset: -50%; opacity: 0.55; mix-blend-mode: overlay; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='2.2' intercept='-0.6'/%3E%3CfeFuncG type='linear' slope='2.2' intercept='-0.6'/%3E%3CfeFuncB type='linear' slope='2.2' intercept='-0.6'/%3E%3CfeFuncA type='linear' slope='0' intercept='1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: bootGrain 1s steps(5) infinite; transition: opacity 0.9s var(--ease); }
-[data-theme="light"] .boot-grain { opacity: 0.34; mix-blend-mode: soft-light; }
 @keyframes bootGrain { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-4%, 3%); } 40% { transform: translate(3%, -5%); } 60% { transform: translate(-6%, -2%); } 80% { transform: translate(5%, 4%); } }
 .boot-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 20px;
   transition: opacity 0.5s var(--ease), transform 0.7s var(--ease); }
 .boot-logo { display: block; width: clamp(64px, 7.5vw, 92px); height: auto; transform-origin: 50% 75%;
-  filter: drop-shadow(0 18px 34px rgba(255, 0, 0, 0.28)); animation: bootShake 1.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite; }
+  filter: drop-shadow(0 18px 34px rgba(46, 28, 120, 0.35)); animation: bootShake 1.7s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite; }
 @keyframes bootShake {
   0%, 56%, 100% { transform: translateX(0) rotate(0); }
   8% { transform: translateX(-6px) rotate(-9deg); }
@@ -1036,7 +999,7 @@ html.is-booting, html.is-booting body { overflow: hidden; }
   32% { transform: translateX(5px) rotate(7deg); }
   40% { transform: translateX(-2px) rotate(-3deg); }
   48% { transform: translateX(1px) rotate(1deg); } }
-.boot-pct { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: var(--dim); font-variant-numeric: tabular-nums; }
+.boot-pct { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; color: rgba(255, 255, 255, 0.9); font-variant-numeric: tabular-nums; }
 .boot-prop { position: fixed; left: 50%; top: 50%; width: 120px; transform: translate(-50%, -50%); pointer-events: none; }
 .boot-prop img { display: block; width: 100%; height: auto; opacity: 0; transform: rotate(var(--r)) scale(0.55);
   filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.4));
@@ -1045,7 +1008,7 @@ html.is-booting, html.is-booting body { overflow: hidden; }
 @keyframes bootBob { 0%, 100% { transform: rotate(var(--r)) translateY(0); } 50% { transform: rotate(calc(var(--r) + 4deg)) translateY(-9px); } }
 .boot-prop.is-flying img { animation: none; opacity: 1; transform: rotate(var(--to-r)) scale(1); transition: transform 1.15s cubic-bezier(0.7, 0, 0.2, 1); }
 .boot.is-leaving { pointer-events: none; background-color: transparent; }
-.boot.is-leaving .boot-mesh, .boot.is-leaving .boot-grain { opacity: 0; }
+.boot.is-leaving .boot-blob, .boot.is-leaving .boot-grain { opacity: 0; }
 .boot.is-leaving .boot-center { opacity: 0; transform: translate(-50%, -50%) scale(0.82); }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

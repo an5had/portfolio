@@ -1,5 +1,5 @@
 /* First-load screen.
-   A slowly moving, grain-textured gradient mesh; the red an5had mark in the centre, shaking left
+   A grain-textured, noise-displaced ultramarine blob (BootBlob); the red an5had mark in the centre, shaking left
    and right; and — on the home page — the desk props floating around it, each popping in as its
    image decodes. When the hero's frames, the props and the fonts are ready, the mesh and mark fade
    away and the props fly (FLIP) from their orbit straight onto their default spots on the desk,
@@ -10,6 +10,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { PROPS } from './hero/HeroProps.jsx';
+import BootBlob from './BootBlob.jsx';
 
 const MIN_MS = 1600;
 const MAX_MS = 14000;
@@ -80,6 +81,7 @@ export default function BootLoader() {
     const t0 = performance.now();
     const got = { props: 0, fonts: false, hero: !home || window.__heroReady === true, heroP: 0 };
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hold = new URLSearchParams(window.location.search).get('boot') === 'hold';
 
     if (home) {
       PROPS.forEach((p) => {
@@ -153,6 +155,7 @@ export default function BootLoader() {
       setPct((v) => (Math.round(shown) !== v ? Math.round(shown) : v));
       const elapsed = performance.now() - t0;
       const ready = got.fonts && got.hero && (!home || got.props >= PROPS.length);
+      if (hold) return;                                       // ?boot=hold: keep it up for design review
       if ((ready && elapsed > (home ? MIN_MS : 700)) || elapsed > MAX_MS) {
         cancelAnimationFrame(raf);
         setPct(100);
@@ -175,7 +178,7 @@ export default function BootLoader() {
 
   return (
     <div className={`boot${phase === 'leaving' ? ' is-leaving' : ''}`} role="status" aria-live="polite" aria-label="Loading">
-      <div className="boot-mesh" aria-hidden="true"><i /><i /><i /><i /></div>
+      <BootBlob />
       <div className="boot-grain" aria-hidden="true" />
       <div className="boot-center">
         <Mark />
